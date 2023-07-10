@@ -1,98 +1,3 @@
-// import * as React from "react";
-// import Box from "@mui/material/Box";
-// import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-// import Button from "@mui/material/Button";
-// import List from "@mui/material/List";
-// import Divider from "@mui/material/Divider";
-// import ListItem from "@mui/material/ListItem";
-// import ListItemButton from "@mui/material/ListItemButton";
-// import ListItemIcon from "@mui/material/ListItemIcon";
-// import ListItemText from "@mui/material/ListItemText";
-// import InboxIcon from "@mui/icons-material/MoveToInbox";
-// import MailIcon from "@mui/icons-material/Mail";
-// import MenuIcon from "@mui/icons-material/Menu";
-
-// type Anchor = "top" | "left" | "bottom" | "right";
-
-// export default function SideDrawar() {
-//   const [state, setState] = React.useState({
-//     top: false,
-//     left: false,
-//     bottom: false,
-//     right: false,
-//   });
-
-//   const toggleDrawer =
-//     (anchor: Anchor, open: boolean) =>
-//     (event: React.KeyboardEvent | React.MouseEvent) => {
-//       if (
-//         event &&
-//         event.type === "keydown" &&
-//         ((event as React.KeyboardEvent).key === "Tab" ||
-//           (event as React.KeyboardEvent).key === "Shift")
-//       ) {
-//         return;
-//       }
-
-//       setState({ ...state, [anchor]: open });
-//     };
-
-//   const list = (anchor: Anchor) => (
-//     <Box
-//       sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-//       role="presentation"
-//       onClick={toggleDrawer(anchor, false)}
-//       onKeyDown={toggleDrawer(anchor, false)}
-//     >
-//       <List>
-//         {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-//           <ListItem key={text} disablePadding>
-//             <ListItemButton>
-//               <ListItemIcon>
-//                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-//               </ListItemIcon>
-//               <ListItemText primary={text} />
-//             </ListItemButton>
-//           </ListItem>
-//         ))}
-//       </List>
-//       <Divider />
-//       <List>
-//         {["All mail", "Trash", "Spam"].map((text, index) => (
-//           <ListItem key={text} disablePadding>
-//             <ListItemButton>
-//               <ListItemIcon>
-//                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-//               </ListItemIcon>
-//               <ListItemText primary={text} />
-//             </ListItemButton>
-//           </ListItem>
-//         ))}
-//       </List>
-//     </Box>
-//   );
-
-//   return (
-//     <div>
-//       {(["left"] as const).map((anchor) => (
-//         <React.Fragment key={anchor}>
-//           <Button onClick={toggleDrawer(anchor, true)}>
-//             <MenuIcon />
-//           </Button>
-//           <SwipeableDrawer
-//             anchor={anchor}
-//             open={state[anchor]}
-//             onClose={toggleDrawer(anchor, false)}
-//             onOpen={toggleDrawer(anchor, true)}
-//           >
-//             {list(anchor)}
-//           </SwipeableDrawer>
-//         </React.Fragment>
-//       ))}
-//     </div>
-//   );
-// }
-
 import * as React from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -113,8 +18,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import AppRouter from "../config/router";
 import { ThemeProvider, createTheme } from "@mui/material";
+import { Outlet } from "react-router-dom";
+import { GiCow, GiGoat, GiShoppingBag } from "react-icons/gi";
+import { GoHome } from "react-icons/go";
 
 const drawerWidth = 240;
 
@@ -240,31 +147,44 @@ export default function MiniDrawer() {
           </DrawerHeader>
           <Divider />
           <List>
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
+            {["Home", "Add Animal", "Register a Share", "Issue a Share"].map(
+              (text, index) => (
+                <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
                   >
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {index === 0 ? (
+                        <GoHome size={30} />
+                      ) : index === 1 ? (
+                        <GiCow size={30} />
+                      ) : index === 2 ? (
+                        <GiGoat size={30} />
+                      ) : (
+                        <GiShoppingBag size={30} />
+                      )}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )
+            )}
           </List>
           <Divider />
-          <List>
+          {/* <List>
             {["All mail", "Trash", "Spam"].map((text, index) => (
               <ListItem key={text} disablePadding sx={{ display: "block" }}>
                 <ListItemButton
@@ -287,11 +207,13 @@ export default function MiniDrawer() {
                 </ListItemButton>
               </ListItem>
             ))}
-          </List>
+          </List> */}
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
-          <AppRouter />
+          {/* outlet */}
+          <Outlet />
+          {/* <AppRouter /> */}
         </Box>
       </Box>
     </ThemeProvider>

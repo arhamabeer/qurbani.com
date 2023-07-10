@@ -1,13 +1,11 @@
 import React from "react";
-// import AppRouter from "../src/config/router/index";
 import "./App.scss";
-import SideDrawar from "./components/sideNav";
+import AppRouter from "./config/router";
 
 function App() {
   return (
     <div>
-      <SideDrawar />
-      {/* <AppRouter /> */}
+      <AppRouter />
     </div>
   );
 }
