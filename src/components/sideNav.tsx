@@ -20,8 +20,8 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import { GiCow, GiGoat, GiShoppingBag } from "react-icons/gi";
-import { GoHome } from "react-icons/go";
+import { GiCow, GiShoppingBag } from "react-icons/gi";
+import { GoHome, GoPlus } from "react-icons/go";
 
 const drawerWidth = 240;
 
@@ -167,9 +167,9 @@ export default function MiniDrawer() {
                       {index === 0 ? (
                         <GoHome size={30} />
                       ) : index === 1 ? (
-                        <GiCow size={30} />
+                        <GoPlus size={30} />
                       ) : index === 2 ? (
-                        <GiGoat size={30} />
+                        <GiCow size={30} />
                       ) : (
                         <GiShoppingBag size={30} />
                       )}
