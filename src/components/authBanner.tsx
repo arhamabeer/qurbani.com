@@ -1,13 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-type AuthBanner = {
+type AuthBannerProp = {
   title: string;
   text: string;
   action: number;
 };
 
-function AuthBanner(props: AuthBanner) {
+function AuthBanner(props: AuthBannerProp) {
   const navigate = useNavigate();
   return (
     <div className="bg-themeBg flex flex-col justify-center items-center text-white w-1/2 h-[100vh]">
