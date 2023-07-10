@@ -1,36 +1,43 @@
 import * as React from "react";
-import Box from "@mui/joy/Box";
-import Card from "@mui/joy/Card";
-import CardCover from "@mui/joy/CardCover";
-import CardContent from "@mui/joy/CardContent";
-import Typography from "@mui/joy/Typography";
+import Card from "@mui/material/Card";
+import styles from "./components.module.scss";
+import { SiHappycow } from "react-icons/si";
+import { GiGoat, GiCamelHead, GiCow } from "react-icons/gi";
 
-export default function StatusCard() {
+type CardProp = {
+  label: string;
+  quantity: number;
+};
+
+const icons = [
+  <GiCow className="absolute left-5 bottom-5" size={80} />,
+  <SiHappycow className="absolute left-5 bottom-5" size={80} />,
+  <GiGoat className="absolute left-5 bottom-5" size={80} />,
+  <GiCamelHead className="absolute left-5 bottom-5" size={80} />,
+];
+
+export default function StatusCard(props: CardProp) {
+  const { label, quantity } = props;
+  const check = label.split(" ")[1];
+  const icon =
+    check == "Animals"
+      ? icons[0]
+      : check == "Cows"
+      ? icons[1]
+      : check == "Goats"
+      ? icons[2]
+      : icons[3];
   return (
-    <Box
-      component="ul"
-      sx={{ display: "flex", gap: 2, flexWrap: "wrap", p: 0, m: 0 }}
+    <Card
+      sx={{ maxWidth: 500, height: 250 }}
+      className={
+        styles.statusCardImg +
+        " flex justify-center items-center flex-col w-96 m-2 rounded-lg cursor-pointer relative"
+      }
     >
-      <Card component="li" sx={{ minWidth: 300, flexGrow: 1 }}>
-        <CardCover>
-          <img
-            src="https://images.unsplash.com/photo-1502657877623-f66bf489d236?auto=format&fit=crop&w=800"
-            srcSet="https://images.unsplash.com/photo-1502657877623-f66bf489d236?auto=format&fit=crop&w=800&dpr=2 2x"
-            loading="lazy"
-            alt=""
-          />
-        </CardCover>
-        <CardContent>
-          <Typography
-            level="h6"
-            fontWeight="lg"
-            textColor="#fff"
-            mt={{ xs: 12, sm: 18 }}
-          >
-            Image
-          </Typography>
-        </CardContent>
-      </Card>
-    </Box>
+      {icon}
+      <h1 className="text-2xl">{label}</h1>
+      <h1 className="text-4xl">{quantity}</h1>
+    </Card>
   );
 }
