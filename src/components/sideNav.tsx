@@ -3,6 +3,7 @@ import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import { useNavigate } from "react-router-dom";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,8 +17,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { GiCow, GiShoppingBag } from "react-icons/gi";
@@ -100,6 +99,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer() {
+  const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -160,6 +160,15 @@ export default function MiniDrawer() {
                       justifyContent: open ? "initial" : "center",
                       px: 2.5,
                     }}
+                    onClick={
+                      index === 0
+                        ? () => navigate("/")
+                        : index === 1
+                        ? () => navigate("/registerAnimal")
+                        : index === 2
+                        ? () => navigate("/addShare")
+                        : () => navigate("/issueShare")
+                    }
                   >
                     <ListItemIcon
                       sx={{
