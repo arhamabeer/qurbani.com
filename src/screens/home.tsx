@@ -4,11 +4,11 @@ import StatusCard from "../components/dashboardStatusCard";
 const data = [
   {
     label: "Total Animals",
-    quantity: 250,
+    quantity: 251,
   },
   {
     label: "Total Cows",
-    quantity: 150,
+    quantity: 151,
   },
   {
     label: "Total Goats",
