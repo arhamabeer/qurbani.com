@@ -14,7 +14,9 @@ function AuthBanner(props: AuthBannerProp) {
       <h1 className="text-5xl">{props.title}</h1>
       <h3 className="text-xl my-3">{props.text} </h3>
       <button
-        className="text-xl rounded-2xl border p-3 w-2/5"
+        className={`text-xl rounded-2xl border p-3 w-2/5 ${
+          props.action === 9 && "hidden"
+        }`}
         onClick={
           props.action ? () => navigate("/login") : () => navigate("/register")
         }
