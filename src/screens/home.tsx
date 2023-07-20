@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import StatusCard from "../components/dashboardStatusCard";
 
 const data = [
@@ -19,7 +19,23 @@ const data = [
     quantity: 1,
   },
 ];
+
+type Count = [
+  {
+    label: string;
+    quantity: number;
+  }
+];
+
 function Home() {
+  const [animalCount, setAnimalCount] = useState<Count>([
+    {
+      label: "",
+      quantity: 0,
+    },
+  ]);
+
+  useEffect(() => {}, []);
   return (
     <div className="flex flex-wrap m-3 w-full">
       {data.map((item, key) => (
