@@ -12,7 +12,7 @@ type Animal = {
 type Data = {
   type: number;
   number: number;
-  partPrice: number;
+  partPrice: string;
   desc: string;
 };
 
@@ -23,7 +23,7 @@ function RegisterAnimal() {
     type: 0,
     desc: "",
     number: 0,
-    partPrice: 0,
+    partPrice: "",
   });
 
   useEffect(() => {
@@ -46,7 +46,6 @@ function RegisterAnimal() {
         },
       }
     );
-
     if (response.status === 200) {
       setNumber(response.data.data);
       setData((prevState) => ({
@@ -62,7 +61,7 @@ function RegisterAnimal() {
       number: number,
     }));
   };
-  const handlePriceChange = async (price: number) => {
+  const handlePriceChange = async (price: string) => {
     setData((prevState) => ({
       ...prevState,
       partPrice: price,
@@ -75,6 +74,18 @@ function RegisterAnimal() {
     }));
   };
   console.log(data);
+
+  const submit = async () => {
+    const { desc, number, partPrice, type } = data;
+    let response = await instance.post("/AddAnimal", {
+      params: {
+        type: type,
+        number: number,
+        partPrice: partPrice,
+      },
+    });
+    console.log(`post == `, response);
+  };
 
   if (animals.length === 0) return <h1>LOADING....</h1>;
   return (
@@ -118,7 +129,7 @@ function RegisterAnimal() {
             type="number"
             className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
             placeholder="Part Price"
-            onChange={(e) => handlePriceChange(parseInt(e.target.value))}
+            onChange={(e) => handlePriceChange(e.target.value)}
           />
         </div>
         <div className="w-2/4 flex justify-center items-center my-2 h-auto border border-themeBgDark rounded-xl px-2">
@@ -129,7 +140,10 @@ function RegisterAnimal() {
             onChange={(e) => handleDescChange(e.target.value)}
           />
         </div>
-        <button className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark rounded-xl px-2">
+        <button
+          className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark rounded-xl px-2"
+          onClick={() => submit()}
+        >
           ADD
         </button>
       </div>
