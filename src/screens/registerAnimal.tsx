@@ -1,25 +1,12 @@
 import React, { useEffect, useState } from "react";
 import AuthBanner from "../components/authBanner";
 import { instance } from "../api";
-
-type Animal = {
-  animalId: number;
-  type: string;
-  memo: null | string;
-  parts: number;
-  animalDetails: [];
-};
-type Data = {
-  type: number;
-  number: number;
-  partPrice: string;
-  desc: string;
-};
+import { Animal, RegisterAnimalData } from "../types";
 
 function RegisterAnimal() {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [number, setNumber] = useState<number[]>([]);
-  const [data, setData] = useState<Data>({
+  const [data, setData] = useState<RegisterAnimalData>({
     type: 0,
     desc: "",
     number: 0,

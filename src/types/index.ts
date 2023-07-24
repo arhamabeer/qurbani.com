@@ -19,3 +19,12 @@ export type HomeCount =
       }
     ]
   | [];
+export type DealingData = {
+  Name: string;
+  Contact: string;
+  EmergencyContact: string;
+  Address: string;
+  Nic: string;
+  Descrption: string;
+  QurbaniDay: number;
+};
