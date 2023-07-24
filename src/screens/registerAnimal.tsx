@@ -77,12 +77,11 @@ function RegisterAnimal() {
 
   const submit = async () => {
     const { desc, number, partPrice, type } = data;
-    let response = await instance.post("/AddAnimal", {
-      params: {
-        type: type,
-        number: number,
-        partPrice: partPrice,
-      },
+    const response = await instance.post(`/AddAnimal/`, {
+      type: type,
+      number: number,
+      partPrice: partPrice,
+      desc: desc,
     });
     console.log(`post == `, response);
   };
