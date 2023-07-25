@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import AuthBanner from "../components/authBanner";
 import { instance } from "../api";
-import { Animal, DealingData } from "../types";
+import { Animal, AvailableAnimalsForDeal, DealingData } from "../types";
 
 function AddShare() {
   const [animals, setAnimals] = useState<Animal[]>([]);
-  const [AnimalId, setAnimalId] = useState<number>();
+  const [selectedAnimal, setSelectedAnimal] = useState<number | null>(null);
+  const [AvailableAnimals, setAvailableAnimals] =
+    useState<AvailableAnimalsForDeal>([]);
   const [data, setData] = useState<DealingData>({
     Name: "",
     Contact: "",
@@ -14,6 +16,8 @@ function AddShare() {
     Nic: "",
     Descrption: "",
     QurbaniDay: 0,
+    PartId: 0,
+    AdId: 0,
   });
 
   useEffect(() => {
@@ -33,8 +37,21 @@ function AddShare() {
       [target]: value,
     }));
   };
+  const handleTypeChange = async (animalId: number) => {
+    let response = await instance.get("/GetAnimalNumberAvailableForDealing", {
+      params: {
+        AnimalId: animalId,
+      },
+    });
+    if (response.status === 200) {
+      let animals = response.data.data.sort(
+        (a: any, b: any) => a.number - b.number
+      );
+      setAvailableAnimals(animals);
+    }
+  };
 
-  console.log("DATA => ", data, AnimalId);
+  console.log("DATA => ", data);
 
   if (animals.length === 0) return <h1>LOADING....</h1>;
 
@@ -52,7 +69,7 @@ function AddShare() {
             name="animal"
             className="h-full w-full bg-transparent text-themeBg"
             id=""
-            onChange={(e) => setAnimalId(parseInt(e.target.value))}
+            onChange={(e) => handleTypeChange(parseInt(e.target.value))}
           >
             <option defaultChecked selected disabled value="">
               Select Animal
@@ -62,6 +79,48 @@ function AddShare() {
                 {animal.type}
               </option>
             ))}
+          </select>
+        </div>
+        <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">
+          <select
+            name="number"
+            className="h-full w-full bg-transparent text-themeBg"
+            id=""
+            disabled={AvailableAnimals.length === 0}
+            onChange={(e) => {
+              handleDataChange("AdId", e.target.value);
+              setSelectedAnimal(parseInt(e.target.value));
+            }}
+          >
+            <option defaultChecked selected disabled value="">
+              Select Animal Number
+            </option>
+            {AvailableAnimals.map((animal) => (
+              <option key={animal.adId} value={animal.adId}>
+                {animal.number}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">
+          <select
+            name="part"
+            className="h-full w-full bg-transparent text-themeBg"
+            id=""
+            disabled={selectedAnimal === null}
+            onChange={(e) => handleDataChange("PartId", e.target.value)}
+          >
+            <option defaultChecked selected disabled value="">
+              Select Animal Part
+            </option>
+            {AvailableAnimals.filter((e) => e.adId === selectedAnimal).map(
+              (animal) =>
+                animal.parts.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))
+            )}
           </select>
         </div>
         <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">

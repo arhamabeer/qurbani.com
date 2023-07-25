@@ -27,4 +27,16 @@ export type DealingData = {
   Nic: string;
   Descrption: string;
   QurbaniDay: number;
+  PartId: number;
+  AdId: number;
 };
+
+export type AvailableAnimalsForDeal =
+  | [
+      {
+        adId: number;
+        number: number;
+        parts: number[] | [];
+      }
+    ]
+  | [];
