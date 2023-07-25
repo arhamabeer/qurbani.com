@@ -25,7 +25,7 @@ export type DealingData = {
   EmergencyContact: string;
   Address: string;
   Nic: string;
-  Descrption: string;
+  Description: string;
   QurbaniDay: number;
   PartId: number;
   AdId: number;
@@ -35,6 +35,7 @@ export type AvailableAnimalsForDeal =
   | [
       {
         adId: number;
+        price: number;
         number: number;
         parts: number[] | [];
       }
