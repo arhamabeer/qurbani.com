@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
 import StatusCard from "../components/dashboardStatusCard";
 import { instance } from "../api";
-
-type Count =
-  | [
-      {
-        label: string;
-        quantity: number;
-      }
-    ]
-  | [];
+import { HomeCount } from "../types";
 
 function Home() {
-  const [animalCount, setAnimalCount] = useState<Count>([]);
+  const [animalCount, setAnimalCount] = useState<HomeCount>([]);
 
   useEffect(() => {
     (async () => {
@@ -42,6 +34,8 @@ function Home() {
       }
     })();
   }, []);
+
+  if (animalCount.length === 0) return <h1>LOADING....</h1>;
 
   return (
     <div className="flex flex-wrap m-3 w-full">
