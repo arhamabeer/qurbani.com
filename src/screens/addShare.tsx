@@ -14,11 +14,15 @@ function AddShare() {
     EmergencyContact: "",
     Address: "",
     Nic: "",
-    Descrption: "",
+    Description: "---",
     QurbaniDay: 0,
     PartId: 0,
     AdId: 0,
   });
+  let price =
+    selectedAnimal !== null
+      ? AvailableAnimals.filter((e) => e.adId == selectedAnimal)[0].price
+      : 0;
 
   useEffect(() => {
     (async () => {
@@ -51,17 +55,20 @@ function AddShare() {
     }
   };
 
-  console.log("DATA => ", data);
-
   if (animals.length === 0) return <h1>LOADING....</h1>;
 
+  // console.log("DATA => ", AvailableAnimals, selectedAnimal);
+  const submit = async () => {
+    let response = await instance.post("/ConfirmDealing", data);
+    console.log("response => ", response);
+  };
   return (
     <div className="flex  justify-between">
       <div className="flex w-2/4 flex-col justify-center items-center">
         <div className="w-2/4 flex justify-center items-center mb-5 mt-[-10rem] h-20 ">
           <h1 className="text-2xl underline decoration-themeBgDark">
-            Total Cost:{" "}
-            <span className="text-themeBg font-bold">PKR 20000</span>
+            Total Cost: {price}
+            <span className="text-themeBg font-bold"></span>
           </h1>
         </div>
         <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">
@@ -88,7 +95,7 @@ function AddShare() {
             id=""
             disabled={AvailableAnimals.length === 0}
             onChange={(e) => {
-              handleDataChange("AdId", e.target.value);
+              handleDataChange("AdId", parseInt(e.target.value));
               setSelectedAnimal(parseInt(e.target.value));
             }}
           >
@@ -108,7 +115,9 @@ function AddShare() {
             className="h-full w-full bg-transparent text-themeBg"
             id=""
             disabled={selectedAnimal === null}
-            onChange={(e) => handleDataChange("PartId", e.target.value)}
+            onChange={(e) =>
+              handleDataChange("PartId", parseInt(e.target.value))
+            }
           >
             <option defaultChecked selected disabled value="">
               Select Animal Part
@@ -171,7 +180,9 @@ function AddShare() {
             name="day"
             className="h-full w-full bg-transparent text-themeBg"
             id=""
-            onChange={(e) => handleDataChange("QurbaniDay", e.target.value)}
+            onChange={(e) =>
+              handleDataChange("QurbaniDay", parseInt(e.target.value))
+            }
           >
             <option defaultChecked selected disabled value="">
               Qurbani Day
@@ -182,7 +193,10 @@ function AddShare() {
           </select>
         </div>
 
-        <button className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark rounded-xl px-2">
+        <button
+          className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark rounded-xl px-2"
+          onClick={() => submit()}
+        >
           REGISTER
         </button>
       </div>
