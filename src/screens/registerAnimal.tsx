@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import AuthBanner from "../components/authBanner";
 import { instance } from "../api";
 import { Animal, RegisterAnimalData } from "../types";
+import ToastComponent from "../components/ToastComponent";
+import { submitToast } from "../handlers";
+import Loader from "../components/Loader";
 
 function RegisterAnimal() {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [number, setNumber] = useState<number[]>([]);
+  const [load, setLoad] = useState<boolean | null>(null);
   const [data, setData] = useState<RegisterAnimalData>({
     type: 0,
     desc: "",
@@ -60,20 +65,29 @@ function RegisterAnimal() {
       desc: desc,
     }));
   };
-  console.log(data);
+  // console.log(data);
 
   const submit = async () => {
-    const { desc, number, partPrice, type } = data;
-    const response = await instance.post(`/AddAnimal/`, {
-      type: type,
-      number: number,
-      partPrice: partPrice,
-      desc: desc,
-    });
-    console.log(`post == `, response);
+    try {
+      const { desc, number, partPrice, type } = data;
+      const response = await instance.post(`/AddAnimal/`, {
+        type: type,
+        number: number,
+        partPrice: partPrice,
+        desc: desc,
+      });
+      if (response.status === 200) {
+        toast.success(response.data.data);
+      } else {
+        toast.error(response.data.errorMessage);
+      }
+      console.log(`post == `, response);
+    } catch (err: any) {
+      toast.error(err.response.data.errorMessage);
+    }
   };
 
-  if (animals.length === 0) return <h1>LOADING....</h1>;
+  if (animals.length > 0) <Loader />;
   return (
     <div className="flex  justify-between">
       <div className="flex w-2/4 flex-col justify-center items-center">
@@ -128,7 +142,7 @@ function RegisterAnimal() {
         </div>
         <button
           className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark rounded-xl px-2"
-          onClick={() => submit()}
+          onClick={() => submitToast(submit)}
         >
           ADD
         </button>
@@ -138,6 +152,7 @@ function RegisterAnimal() {
         text="Add a new Animal in the Stocks"
         title="Register Animal"
       />
+      <ToastComponent />
     </div>
   );
 }
