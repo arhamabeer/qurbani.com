@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import StatusCard from "../components/dashboardStatusCard";
 import { instance } from "../api";
 import { HomeCount } from "../types";
+import Loader from "../components/Loader";
 
 function Home() {
   const [animalCount, setAnimalCount] = useState<HomeCount>([]);
@@ -35,7 +36,7 @@ function Home() {
     })();
   }, []);
 
-  if (animalCount.length === 0) return <h1>LOADING....</h1>;
+  if (animalCount.length === 0) return <Loader />;
 
   return (
     <div className="flex flex-wrap m-3 w-full">
