@@ -32,6 +32,18 @@ function IssueShare() {
     });
     setNicData(response.data.data);
   };
+
+  const handleIssue = async () => {
+    let data = {
+      dealId: nicData.dealId,
+      personId: nicData.personId,
+    };
+    const response = await instance.post("/IssueDealToPerson", data);
+    // setNicData(response.data.data);
+    console.log("Issue", response);
+  };
+
+  console.log("data", nicData);
   return (
     <div className="flex  justify-between">
       <div className="flex w-2/4 flex-col justify-center items-center">
@@ -119,7 +131,9 @@ function IssueShare() {
           <div className="w-2/4 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Picked:{" "}
-              <span className="text-themeBg font-bold">{nicData.pickedUp}</span>
+              <span className="text-themeBg font-bold">
+                {nicData.pickedUp ? "Yes" : "No"}
+              </span>
             </h1>
           </div>
           <div className="w-2/4 flex items-center my-2 h-10 px-2 ">
@@ -139,8 +153,8 @@ function IssueShare() {
             </h1>
           </div>
           <button
-            disabled
             className="w-1/4 flex justify-center items-center my-2 h-10 bg-themeBgDark rounded-xl px-2"
+            onClick={() => handleIssue()}
           >
             ISSUE
           </button>
