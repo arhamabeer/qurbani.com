@@ -47,7 +47,7 @@ function IssueShare() {
   return (
     <div className="flex  justify-between">
       <div className="flex w-2/4 flex-col justify-center items-center">
-        <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl pl-2">
+        <div className="w-4/5 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl pl-2">
           <input
             type="text"
             className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
@@ -74,25 +74,25 @@ function IssueShare() {
                 }
           }
         >
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Name:{" "}
               <span className="text-themeBg font-bold">{nicData.name}</span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Address:{" "}
               <span className="text-themeBg font-bold">{nicData.address}</span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Contact:{" "}
               <span className="text-themeBg font-bold">{nicData.contact}</span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Emergency Contact:{" "}
               <span className="text-themeBg font-bold">
@@ -100,7 +100,7 @@ function IssueShare() {
               </span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Animal:{" "}
               <span className="text-themeBg font-bold">
@@ -108,19 +108,19 @@ function IssueShare() {
               </span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Animal Number:{" "}
               <span className="text-themeBg font-bold">{nicData.number}</span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Part:{" "}
               <span className="text-themeBg font-bold">{nicData.partId}</span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Qurbani Day:{" "}
               <span className="text-themeBg font-bold">
@@ -128,7 +128,7 @@ function IssueShare() {
               </span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2">
             <h1 className="text-2xl">
               Picked:{" "}
               <span className="text-themeBg font-bold">
@@ -136,7 +136,7 @@ function IssueShare() {
               </span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2 ">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2 ">
             <h1 className="text-2xl underline decoration-themeBgDark">
               Charged Cost:{" "}
               <span className="text-themeBg font-bold">
@@ -144,7 +144,7 @@ function IssueShare() {
               </span>
             </h1>
           </div>
-          <div className="w-2/4 flex items-center my-2 h-10 px-2 ">
+          <div className="w-4/5 flex items-center my-2 h-10 px-2 ">
             <h1 className="text-2xl underline decoration-themeBgDark">
               Final Cost:{" "}
               <span className="text-themeBg font-bold">
