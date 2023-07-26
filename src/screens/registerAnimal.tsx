@@ -19,11 +19,16 @@ function RegisterAnimal() {
 
   useEffect(() => {
     (async () => {
-      let response = await instance.get("/GetAnimalRegisteration");
-      if (response.status === 200) {
-        //set data to state
-        setAnimals(response.data.data);
-      } else {
+      try {
+        let response = await instance.get("/GetAnimalRegisteration");
+        if (response.status === 200) {
+          //set data to state
+          setAnimals(response.data.data);
+        } else {
+          toast.error(response.data.errorMessage);
+        }
+      } catch (err: any) {
+        toast.error(err.response.data.errorMessage);
       }
     })();
   }, []);
@@ -80,7 +85,7 @@ function RegisterAnimal() {
       } else {
         toast.error(response.data.errorMessage);
       }
-      console.log(`post == `, response);
+      // console.log(`post == `, response);
     } catch (err: any) {
       toast.error(err.response.data.errorMessage);
     }

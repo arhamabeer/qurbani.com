@@ -3,6 +3,8 @@ import AuthBanner from "../components/authBanner";
 import { instance } from "../api";
 import { NicData } from "../types";
 import Loader from "../components/Loader";
+import { toast } from "react-toastify";
+import { submitToast } from "../handlers";
 
 function IssueShare() {
   const [nic, setNic] = useState<string>("");
@@ -35,22 +37,34 @@ function IssueShare() {
         },
       });
       if (response.status === 200) {
-        setLoad(false);
         setNicData(response.data.data);
+        setLoad(false);
+      } else {
+        toast.error(response.data.errorMessage);
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(err.response.data.errorMessage);
       setLoad(false);
     }
   };
 
   const handleIssue = async () => {
-    let data = {
-      dealId: nicData.dealId,
-      personId: nicData.personId,
-    };
-    const response = await instance.post("/IssueDealToPerson", data);
-    // setNicData(response.data.data);
-    console.log("Issue", response);
+    try {
+      let data = {
+        dealId: nicData.dealId,
+        personId: nicData.personId,
+      };
+      const response = await instance.post("/IssueDealToPerson", data);
+      console.log("data", response, data);
+
+      if (response.status === 200) {
+        toast.success(response.data.data);
+      } else {
+        toast.error(response.data.errorMessage);
+      }
+    } catch (err: any) {
+      toast.error(err.response.data.errorMessage);
+    }
   };
 
   // console.log("data", nicData, load);
@@ -171,6 +185,7 @@ function IssueShare() {
             </div>
             <button
               className="w-1/4 flex justify-center items-center my-2 h-10 bg-themeBgDark rounded-xl px-2"
+              // onClick={() => submitToast(handleIssue)}
               onClick={() => handleIssue()}
             >
               ISSUE
