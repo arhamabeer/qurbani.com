@@ -56,8 +56,6 @@ function AddShare() {
     }
   };
 
-  if (animals.length === 0) return <h1>LOADING....</h1>;
-
   // console.log("DATA => ", AvailableAnimals, selectedAnimal);
   const submit = async () => {
     let response = await instance.post("/ConfirmDealing", data);

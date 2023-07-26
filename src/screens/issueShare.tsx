@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import AuthBanner from "../components/authBanner";
 import { instance } from "../api";
 import { NicData } from "../types";
+import Loader from "../components/Loader";
 
 function IssueShare() {
-  const [nic, setNic] = useState("");
+  const [nic, setNic] = useState<string>("");
+  const [load, setLoad] = useState<boolean>(false);
   const [nicData, setNicData] = useState<NicData>({
     name: "",
     contact: "",
@@ -25,12 +27,20 @@ function IssueShare() {
   });
 
   const handleFind = async () => {
-    const response = await instance.get("/GetDealOfPerson", {
-      params: {
-        nic: nic,
-      },
-    });
-    setNicData(response.data.data);
+    setLoad(!load);
+    try {
+      const response = await instance.get("/GetDealOfPerson", {
+        params: {
+          nic: nic,
+        },
+      });
+      if (response.status === 200) {
+        setLoad(false);
+        setNicData(response.data.data);
+      }
+    } catch (err) {
+      setLoad(false);
+    }
   };
 
   const handleIssue = async () => {
@@ -43,7 +53,7 @@ function IssueShare() {
     console.log("Issue", response);
   };
 
-  console.log("data", nicData);
+  // console.log("data", nicData, load);
   return (
     <div className="flex  justify-between">
       <div className="flex w-2/4 flex-col justify-center items-center">
@@ -61,104 +71,112 @@ function IssueShare() {
             Find
           </button>
         </div>
-        <div
-          style={
-            nicData.name === ""
-              ? { display: "none" }
-              : {
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }
-          }
-        >
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Name:{" "}
-              <span className="text-themeBg font-bold">{nicData.name}</span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Address:{" "}
-              <span className="text-themeBg font-bold">{nicData.address}</span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Contact:{" "}
-              <span className="text-themeBg font-bold">{nicData.contact}</span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Emergency Contact:{" "}
-              <span className="text-themeBg font-bold">
-                {nicData.emergencyContact}
-              </span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Animal:{" "}
-              <span className="text-themeBg font-bold">
-                {nicData.animalType}
-              </span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Animal Number:{" "}
-              <span className="text-themeBg font-bold">{nicData.number}</span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Part:{" "}
-              <span className="text-themeBg font-bold">{nicData.partId}</span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Qurbani Day:{" "}
-              <span className="text-themeBg font-bold">
-                {nicData.qurbaniDay}
-              </span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2">
-            <h1 className="text-2xl">
-              Picked:{" "}
-              <span className="text-themeBg font-bold">
-                {nicData.pickedUp ? "Yes" : "No"}
-              </span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2 ">
-            <h1 className="text-2xl underline decoration-themeBgDark">
-              Charged Cost:{" "}
-              <span className="text-themeBg font-bold">
-                PKR {nicData.price}
-              </span>
-            </h1>
-          </div>
-          <div className="w-4/5 flex items-center my-2 h-10 px-2 ">
-            <h1 className="text-2xl underline decoration-themeBgDark">
-              Final Cost:{" "}
-              <span className="text-themeBg font-bold">
-                PKR {nicData.finalPrice}
-              </span>
-            </h1>
-          </div>
-          <button
-            className="w-1/4 flex justify-center items-center my-2 h-10 bg-themeBgDark rounded-xl px-2"
-            onClick={() => handleIssue()}
+        {load ? (
+          <Loader />
+        ) : (
+          <div
+            style={
+              nicData.name === ""
+                ? { display: "none" }
+                : {
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }
+            }
           >
-            ISSUE
-          </button>
-        </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Name:{" "}
+                <span className="text-themeBg font-bold">{nicData.name}</span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Address:{" "}
+                <span className="text-themeBg font-bold">
+                  {nicData.address}
+                </span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Contact:{" "}
+                <span className="text-themeBg font-bold">
+                  {nicData.contact}
+                </span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Emergency Contact:{" "}
+                <span className="text-themeBg font-bold">
+                  {nicData.emergencyContact}
+                </span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Animal:{" "}
+                <span className="text-themeBg font-bold">
+                  {nicData.animalType}
+                </span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Animal Number:{" "}
+                <span className="text-themeBg font-bold">{nicData.number}</span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Part:{" "}
+                <span className="text-themeBg font-bold">{nicData.partId}</span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Qurbani Day:{" "}
+                <span className="text-themeBg font-bold">
+                  {nicData.qurbaniDay}
+                </span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2">
+              <h1 className="text-2xl">
+                Picked:{" "}
+                <span className="text-themeBg font-bold">
+                  {nicData.pickedUp ? "Yes" : "No"}
+                </span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2 ">
+              <h1 className="text-2xl underline decoration-themeBgDark">
+                Charged Cost:{" "}
+                <span className="text-themeBg font-bold">
+                  PKR {nicData.price}
+                </span>
+              </h1>
+            </div>
+            <div className="w-4/5 flex items-center my-2 h-10 px-2 ">
+              <h1 className="text-2xl underline decoration-themeBgDark">
+                Final Cost:{" "}
+                <span className="text-themeBg font-bold">
+                  PKR {nicData.finalPrice}
+                </span>
+              </h1>
+            </div>
+            <button
+              className="w-1/4 flex justify-center items-center my-2 h-10 bg-themeBgDark rounded-xl px-2"
+              onClick={() => handleIssue()}
+            >
+              ISSUE
+            </button>
+          </div>
+        )}
       </div>
       <AuthBanner
         action={9}
