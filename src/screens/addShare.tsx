@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AuthBanner from "../components/authBanner";
 import { instance } from "../api";
 import { Animal, AvailableAnimalsForDeal, DealingData } from "../types";
+import Loader from "../components/Loader";
 
 function AddShare() {
   const [animals, setAnimals] = useState<Animal[]>([]);
@@ -62,6 +63,9 @@ function AddShare() {
     let response = await instance.post("/ConfirmDealing", data);
     console.log("response => ", response);
   };
+
+  if (animals.length === 0) return <Loader />;
+
   return (
     <div className="flex  justify-between">
       <div className="flex w-2/4 flex-col justify-center items-center">
