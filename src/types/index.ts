@@ -41,3 +41,22 @@ export type AvailableAnimalsForDeal =
       }
     ]
   | [];
+
+export type NicData = {
+  name: string;
+  contact: string;
+  emergencyContact: string;
+  address: string;
+  nic: string;
+  adId: number;
+  partId: number;
+  qurbaniDay: number;
+  description: string;
+  dealId: number;
+  pickedUp: boolean;
+  personId: number;
+  price: number;
+  finalPrice: number;
+  animalType: string;
+  number: number;
+};
