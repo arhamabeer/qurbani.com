@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import AuthBanner from "../components/authBanner";
 import { instance } from "../api";
 import { Animal, AvailableAnimalsForDeal, DealingData } from "../types";
+import Loader from "../components/Loader";
+import { submitToast } from "../handlers";
+import { toast } from "react-toastify";
 
 function AddShare() {
   const [animals, setAnimals] = useState<Animal[]>([]);
@@ -26,11 +29,17 @@ function AddShare() {
 
   useEffect(() => {
     (async () => {
-      let response = await instance.get("/GetAnimalRegisteration");
-      if (response.status === 200) {
-        //set data to state
-        setAnimals(response.data.data);
-      } else {
+      try {
+        let response = await instance.get("/GetAnimalRegisteration");
+        if (response.status === 200) {
+          //set data to state
+          setAnimals(response.data.data);
+        } else {
+          toast.error(response.data.errorMessage);
+        }
+        // console.log(`post == `, response);
+      } catch (err: any) {
+        toast.error(err.response.data.errorMessage);
       }
     })();
   }, []);
@@ -55,13 +64,23 @@ function AddShare() {
     }
   };
 
-  if (animals.length === 0) return <h1>LOADING....</h1>;
-
-  // console.log("DATA => ", AvailableAnimals, selectedAnimal);
   const submit = async () => {
-    let response = await instance.post("/ConfirmDealing", data);
-    console.log("response => ", response);
+    try {
+      console.log("DATA => ", data);
+      let response = await instance.post("/ConfirmDealing", data);
+      if (response.status === 200) {
+        toast.success(response.data.data);
+      } else {
+        toast.error(response.data.errorMessage);
+      }
+      console.log(`post == `, response);
+    } catch (err: any) {
+      toast.error(err.response.data.errorMessage);
+    }
   };
+
+  if (animals.length === 0) return <Loader />;
+
   return (
     <div className="flex  justify-between">
       <div className="flex w-2/4 flex-col justify-center items-center">
@@ -195,7 +214,7 @@ function AddShare() {
 
         <button
           className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark rounded-xl px-2"
-          onClick={() => submit()}
+          onClick={() => submitToast(submit)}
         >
           REGISTER
         </button>
