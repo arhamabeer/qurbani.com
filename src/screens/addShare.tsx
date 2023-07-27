@@ -5,6 +5,7 @@ import { Animal, AvailableAnimalsForDeal, DealingData } from "../types";
 import Loader from "../components/Loader";
 import { submitToast } from "../handlers";
 import { toast } from "react-toastify";
+import ToastComponent from "../components/ToastComponent";
 
 function AddShare() {
   const [animals, setAnimals] = useState<Animal[]>([]);
@@ -224,6 +225,7 @@ function AddShare() {
         text="Add a new Share for the Animal"
         title="Register Share"
       />
+      <ToastComponent />
     </div>
   );
 }

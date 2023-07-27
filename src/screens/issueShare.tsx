@@ -5,6 +5,7 @@ import { NicData } from "../types";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 import { submitToast } from "../handlers";
+import ToastComponent from "../components/ToastComponent";
 
 function IssueShare() {
   const [nic, setNic] = useState<string>("");
@@ -198,6 +199,7 @@ function IssueShare() {
         text="Dispatch the share to the Person"
         title="Issue Share"
       />
+      <ToastComponent />
     </div>
   );
 }
