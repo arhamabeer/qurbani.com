@@ -6,8 +6,8 @@ export type Animal = {
   animalDetails: [];
 };
 export type RegisterAnimalData = {
-  type: number;
-  number: number;
+  type: number | string;
+  number: number | string;
   partPrice: string;
   desc: string;
 };
@@ -26,9 +26,9 @@ export type DealingData = {
   Address: string;
   Nic: string;
   Description: string;
-  QurbaniDay: number;
-  PartId: number;
-  AdId: number;
+  QurbaniDay: number | string;
+  PartId: number | string;
+  AdId: number | string;
 };
 
 export type AvailableAnimalsForDeal =

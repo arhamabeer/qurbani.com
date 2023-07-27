@@ -13,7 +13,7 @@ function RegisterAnimal() {
   const [data, setData] = useState<RegisterAnimalData>({
     type: 0,
     desc: "",
-    number: 0,
+    number: "",
     partPrice: "",
   });
 
@@ -69,23 +69,39 @@ function RegisterAnimal() {
       desc: desc,
     }));
   };
-  // console.log(data);
+  console.log(data);
 
   const submit = async () => {
     try {
       const { desc, number, partPrice, type } = data;
-      const response = await instance.post(`/AddAnimal/`, {
-        type: type,
-        number: number,
-        partPrice: partPrice,
-        desc: desc,
-      });
-      if (response.status === 200) {
-        toast.success(response.data.data);
+      if (
+        number === "" ||
+        partPrice === "" ||
+        parseInt(partPrice) < 1 ||
+        type === 0
+      ) {
+        toast.error("Every field is mandatory and must be valid!");
       } else {
-        toast.error(response.data.errorMessage);
+        const response = await instance.post(`/AddAnimal/`, {
+          type: type,
+          number: number,
+          partPrice: partPrice,
+          desc: desc,
+        });
+        if (response.status === 200) {
+          toast.success(response.data.data);
+          setData({
+            type: 0,
+            desc: "",
+            number: "",
+            partPrice: "",
+          });
+          setNumber([]);
+        } else {
+          toast.error(response.data.errorMessage);
+        }
       }
-      // console.log(`post == `, response);
+      // console.log(`post === `, response);
     } catch (err: any) {
       toast.error(err.response.data.errorMessage);
     }
@@ -100,6 +116,7 @@ function RegisterAnimal() {
             <select
               className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
               onChange={(e) => handleTypeChange(parseInt(e.target.value))}
+              value={data.type}
             >
               <option
                 defaultChecked
@@ -119,11 +136,12 @@ function RegisterAnimal() {
           </div>
           <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">
             <select
-              name="day"
+              name="number"
               className="h-full w-full bg-transparent text-themeBg"
               id=""
               // disabled={number.length < 0}
               onChange={(e) => handleNumberChange(parseInt(e.target.value))}
+              value={data.number}
             >
               <option defaultValue={0} selected disabled value="">
                 Animal Number
@@ -141,6 +159,7 @@ function RegisterAnimal() {
               className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
               placeholder="Part Price"
               onChange={(e) => handlePriceChange(e.target.value)}
+              value={data.partPrice}
             />
           </div>
           <div className="w-2/4 flex justify-center items-center my-2 h-auto border border-themeBgDark rounded-xl px-2">
@@ -149,6 +168,7 @@ function RegisterAnimal() {
               className="h-auto w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
               placeholder="Any info about the animal"
               onChange={(e) => handleDescChange(e.target.value)}
+              value={data.desc}
             />
           </div>
           <button

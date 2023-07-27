@@ -20,13 +20,13 @@ const icons = [
 export default function StatusCard(props: CardProp) {
   const { label, quantity } = props;
   const icon =
-    label == "CAMELS"
+    label === "CAMELS"
       ? icons[3]
-      : label == "COWS"
+      : label === "COWS"
       ? icons[1]
-      : label == "GOATS"
+      : label === "GOATS"
       ? icons[2]
-      : label == "SHEEPS"
+      : label === "SHEEPS"
       ? icons[4]
       : icons[0];
   return (
