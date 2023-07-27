@@ -85,7 +85,7 @@ function RegisterAnimal() {
       } else {
         toast.error(response.data.errorMessage);
       }
-      // console.log(`post == `, response);
+      // console.log(`post === `, response);
     } catch (err: any) {
       toast.error(err.response.data.errorMessage);
     }

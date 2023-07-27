@@ -25,7 +25,7 @@ function AddShare() {
   });
   let price =
     selectedAnimal !== null
-      ? AvailableAnimals.filter((e) => e.adId == selectedAnimal)[0].price
+      ? AvailableAnimals.filter((e) => e.adId === selectedAnimal)[0].price
       : 0;
 
   useEffect(() => {
@@ -38,7 +38,7 @@ function AddShare() {
         } else {
           toast.error(response.data.errorMessage);
         }
-        // console.log(`post == `, response);
+        // console.log(`post === `, response);
       } catch (err: any) {
         toast.error(err.response.data.errorMessage);
       }
@@ -78,7 +78,7 @@ function AddShare() {
       } else {
         toast.error(response.data.errorMessage);
       }
-      console.log(`post == `, response);
+      console.log(`post === `, response);
     } catch (err: any) {
       toast.error(err.response.data.errorMessage);
     }
