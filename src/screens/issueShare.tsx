@@ -220,6 +220,7 @@ function IssueShare() {
             <button
               className="w-1/4 flex justify-center items-center my-2 h-10 bg-themeBgDark rounded-xl px-2"
               onClick={() => submitToast(handleIssue)}
+              disabled={nicData.pickedUp}
             >
               ISSUE
             </button>
