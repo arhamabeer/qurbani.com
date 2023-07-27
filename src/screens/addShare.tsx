@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import ToastComponent from "../components/ToastComponent";
 
 function AddShare() {
+  const [animalId, setAnimalId] = useState<string | number>("");
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [selectedAnimal, setSelectedAnimal] = useState<number | null>(null);
   const [AvailableAnimals, setAvailableAnimals] =
@@ -18,7 +19,7 @@ function AddShare() {
     EmergencyContact: "",
     Address: "",
     Nic: "",
-    Description: "",
+    Description: "-",
     QurbaniDay: "",
     PartId: "",
     AdId: "",
@@ -53,6 +54,7 @@ function AddShare() {
   };
   const handleTypeChange = async (animalId: number) => {
     try {
+      setAnimalId(animalId);
       let response = await instance.get("/GetAnimalNumberAvailableForDealing", {
         params: {
           AnimalId: animalId,
@@ -70,6 +72,7 @@ function AddShare() {
   };
 
   const submit = async () => {
+    // console.log("DATA => ", data);
     try {
       let {
         AdId,
@@ -81,6 +84,7 @@ function AddShare() {
         PartId,
         QurbaniDay,
       } = data;
+
       if (
         AdId === "" ||
         Address === "" ||
@@ -93,10 +97,8 @@ function AddShare() {
       ) {
         toast.error("Every field is mandatory and must be valid!");
       } else {
-        // console.log("DATA => ", data);
         let response = await instance.post("/ConfirmDealing", data);
         if (response.status === 200) {
-          toast.success(response.data.data);
           setData({
             Name: "",
             Contact: "",
@@ -108,6 +110,15 @@ function AddShare() {
             PartId: "",
             AdId: "",
           });
+          setAnimalId("");
+          setAvailableAnimals([]);
+          setSelectedAnimal(null);
+          toast.success(response.data.data);
+          let response1 = await instance.get("/GetAnimalRegisteration");
+          if (response1.status === 200) {
+            //set data to state
+            setAnimals(response1.data.data);
+          }
         } else {
           toast.error(response.data.errorMessage);
         }
@@ -135,6 +146,7 @@ function AddShare() {
             className="h-full w-full bg-transparent text-themeBg"
             id=""
             onChange={(e) => handleTypeChange(parseInt(e.target.value))}
+            value={animalId}
           >
             <option defaultChecked selected disabled value="">
               Select Animal
@@ -156,6 +168,12 @@ function AddShare() {
               handleDataChange("AdId", parseInt(e.target.value));
               setSelectedAnimal(parseInt(e.target.value));
             }}
+            value={
+              AvailableAnimals.length > 0 && selectedAnimal !== null
+                ? AvailableAnimals.filter((e) => e.adId === selectedAnimal)[0]
+                    .number
+                : ""
+            }
           >
             <option defaultChecked selected disabled value="">
               Select Animal Number
@@ -176,6 +194,7 @@ function AddShare() {
             onChange={(e) =>
               handleDataChange("PartId", parseInt(e.target.value))
             }
+            value={data.PartId}
           >
             <option defaultChecked selected disabled value="">
               Select Animal Part
@@ -196,6 +215,7 @@ function AddShare() {
             className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
             placeholder="Person Name..."
             onChange={(e) => handleDataChange("Name", e.target.value)}
+            value={data.Name}
           />
         </div>
         <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">
@@ -204,6 +224,7 @@ function AddShare() {
             className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
             placeholder="Address..."
             onChange={(e) => handleDataChange("Address", e.target.value)}
+            value={data.Address}
           />
         </div>
         <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">
@@ -212,6 +233,7 @@ function AddShare() {
             className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
             placeholder="Contact Number..."
             onChange={(e) => handleDataChange("Contact", e.target.value)}
+            value={data.Contact}
           />
         </div>
         <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">
@@ -222,6 +244,7 @@ function AddShare() {
             onChange={(e) =>
               handleDataChange("EmergencyContact", e.target.value)
             }
+            value={data.EmergencyContact}
           />
         </div>
         <div className="w-2/4 flex justify-center items-center my-2 h-10 border border-themeBgDark rounded-xl px-2">
@@ -230,6 +253,7 @@ function AddShare() {
             className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
             placeholder="NIC (without dashes) e.g: 4220112345678"
             onChange={(e) => handleDataChange("Nic", e.target.value)}
+            value={data.Nic}
           />
         </div>
 
@@ -241,6 +265,7 @@ function AddShare() {
             onChange={(e) =>
               handleDataChange("QurbaniDay", parseInt(e.target.value))
             }
+            value={data.QurbaniDay}
           >
             <option defaultChecked selected disabled value="">
               Qurbani Day
