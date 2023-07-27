@@ -18,10 +18,10 @@ function AddShare() {
     EmergencyContact: "",
     Address: "",
     Nic: "",
-    Description: "---",
-    QurbaniDay: 0,
-    PartId: 0,
-    AdId: 0,
+    Description: "",
+    QurbaniDay: "",
+    PartId: "",
+    AdId: "",
   });
   let price =
     selectedAnimal !== null
@@ -71,14 +71,48 @@ function AddShare() {
 
   const submit = async () => {
     try {
-      console.log("DATA => ", data);
-      let response = await instance.post("/ConfirmDealing", data);
-      if (response.status === 200) {
-        toast.success(response.data.data);
+      let {
+        AdId,
+        Address,
+        Contact,
+        EmergencyContact,
+        Name,
+        Nic,
+        PartId,
+        QurbaniDay,
+      } = data;
+      if (
+        AdId === "" ||
+        Address === "" ||
+        Contact === "" ||
+        EmergencyContact === "" ||
+        Name === "" ||
+        Nic === "" ||
+        PartId === "" ||
+        QurbaniDay === ""
+      ) {
+        toast.error("Every field is mandatory and must be valid!");
       } else {
-        toast.error(response.data.errorMessage);
+        // console.log("DATA => ", data);
+        let response = await instance.post("/ConfirmDealing", data);
+        if (response.status === 200) {
+          toast.success(response.data.data);
+          setData({
+            Name: "",
+            Contact: "",
+            EmergencyContact: "",
+            Address: "",
+            Nic: "",
+            Description: "",
+            QurbaniDay: "",
+            PartId: "",
+            AdId: "",
+          });
+        } else {
+          toast.error(response.data.errorMessage);
+        }
       }
-      console.log(`post === `, response);
+      // console.log(`post === `, response);
     } catch (err: any) {
       toast.error(err.response.data.errorMessage);
     }
