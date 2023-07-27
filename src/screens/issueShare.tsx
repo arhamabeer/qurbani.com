@@ -29,6 +29,27 @@ function IssueShare() {
     number: 0,
   });
 
+  const handleReset = async () => {
+    setNic("");
+    setNicData({
+      name: "",
+      contact: "",
+      emergencyContact: "",
+      address: "",
+      nic: "",
+      adId: 0,
+      partId: 0,
+      qurbaniDay: 0,
+      description: "",
+      dealId: 0,
+      pickedUp: false,
+      personId: 0,
+      price: 0,
+      finalPrice: 0,
+      animalType: "",
+      number: 0,
+    });
+  };
   const handleFind = async () => {
     setLoad(!load);
     try {
@@ -81,13 +102,21 @@ function IssueShare() {
             type="text"
             className="h-full w-full bg-transparent text-themeBg placeholder-themeBgPlaceholder"
             placeholder="Enter Share ID..."
+            value={nic}
             onChange={(e) => setNic(e.target.value)}
           />
           <button
-            className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark  rounded-r-xl  px-2"
+            className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark border-r border-r-white px-2"
             onClick={() => handleFind()}
           >
             Find
+          </button>
+          <button
+            disabled={nicData.name === ""}
+            className="w-1/4 flex justify-center items-center my-2 h-10  bg-themeBgDark  rounded-r-xl  px-2"
+            onClick={() => handleReset()}
+          >
+            Reset
           </button>
         </div>
         {load ? (
