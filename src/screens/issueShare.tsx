@@ -60,6 +60,10 @@ function IssueShare() {
 
       if (response.status === 200) {
         toast.success(response.data.data);
+        setNicData((prev) => ({
+          ...prev,
+          pickedUp: true,
+        }));
       } else {
         toast.error(response.data.errorMessage);
       }
@@ -186,8 +190,7 @@ function IssueShare() {
             </div>
             <button
               className="w-1/4 flex justify-center items-center my-2 h-10 bg-themeBgDark rounded-xl px-2"
-              // onClick={() => submitToast(handleIssue)}
-              onClick={() => handleIssue()}
+              onClick={() => submitToast(handleIssue)}
             >
               ISSUE
             </button>

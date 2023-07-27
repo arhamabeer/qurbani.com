@@ -52,16 +52,20 @@ function AddShare() {
     }));
   };
   const handleTypeChange = async (animalId: number) => {
-    let response = await instance.get("/GetAnimalNumberAvailableForDealing", {
-      params: {
-        AnimalId: animalId,
-      },
-    });
-    if (response.status === 200) {
-      let animals = response.data.data.sort(
-        (a: any, b: any) => a.number - b.number
-      );
-      setAvailableAnimals(animals);
+    try {
+      let response = await instance.get("/GetAnimalNumberAvailableForDealing", {
+        params: {
+          AnimalId: animalId,
+        },
+      });
+      if (response.status === 200) {
+        let animals = response.data.data.sort(
+          (a: any, b: any) => a.number - b.number
+        );
+        setAvailableAnimals(animals);
+      }
+    } catch (err: any) {
+      toast.error(err.response.data.errorMessage);
     }
   };
 
