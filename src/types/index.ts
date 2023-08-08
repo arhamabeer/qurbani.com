@@ -60,3 +60,8 @@ export type NicData = {
   animalType: string;
   number: number;
 };
+
+export type LoginValueState = {
+  email: string;
+  password: string;
+};
