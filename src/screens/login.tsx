@@ -18,9 +18,13 @@ function Login() {
   const loginMessage = useSelector(selectAdmin);
 
   React.useEffect(() => {
-    if (loginMessage.adminLoginMessage !== "" && loginMessage.status) {
+    console.log(loginMessage);
+    if (loginMessage.adminLoginMessage !== "" && loginMessage.loginStatus) {
       toast.success(loginMessage.adminLoginMessage);
-    } else if (loginMessage.adminLoginMessage !== "" && !loginMessage.status) {
+    } else if (
+      loginMessage.adminLoginMessage !== "" &&
+      !loginMessage.loginStatus
+    ) {
       toast.error(loginMessage.adminLoginMessage);
     }
   }, [loginMessage.adminLoginMessage]);

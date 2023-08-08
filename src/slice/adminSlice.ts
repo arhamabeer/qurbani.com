@@ -66,8 +66,8 @@ export const adminSlice = createSlice({
             action.payload.data.description
           );
         } else {
-          state.adminLoginMessage = `${action.payload.response.data.responseMessage} ${action.payload.response.data.errorMessage}`;
           state.loginStatus = false;
+          state.adminLoginMessage = `${action.payload.response.data.responseMessage}, ${action.payload.response.data.errorMessage}`;
         }
         state.status = "IDLE";
       })
