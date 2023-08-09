@@ -29,9 +29,10 @@ export const loginAdmin = createAsyncThunk(
         Email: data.email,
         Password: data.password,
       });
-      return res;
-    } catch (ex) {
-      return ex;
+      return res.data;
+    } catch (ex: any) {
+      console.log(`ex =>`, ex);
+      return ex.message;
     }
   }
 );
@@ -55,16 +56,16 @@ export const adminSlice = createSlice({
       })
       .addCase(loginAdmin.fulfilled, (state: adminState, action: any) => {
         // state.products = action.payload;
-        console.log(state, action);
-        if (action.payload.status === 200) {
-          state.email = action.payload.data.data.email;
-          state.name = action.payload.data.data.name;
+        console.log(state, action, typeof action.payload);
+        if (typeof action.payload === "string") {
+          state.adminLoginMessage = action.payload;
+          state.loginStatus = false;
+        } else if (action.payload.responseCode === 200) {
+          state.email = action.payload.data.email;
+          state.name = action.payload.data.name;
           state.adminLoginMessage = "Login Successful";
           state.loginStatus = true;
-          localStorage.setItem(
-            LOCAL_STORAGE_TOKEN,
-            action.payload.data.description
-          );
+          localStorage.setItem(LOCAL_STORAGE_TOKEN, action.payload.description);
         } else {
           state.loginStatus = false;
           state.adminLoginMessage = `${action.payload.response.data.responseMessage}, ${action.payload.response.data.errorMessage}`;
