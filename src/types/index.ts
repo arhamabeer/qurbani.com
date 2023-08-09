@@ -12,7 +12,7 @@ export type RegisterAnimalData = {
   desc: string;
 };
 export type HomeCount = {
-  animals:
+  allAnimals:
     | [
         {
           label: string;
@@ -20,6 +20,8 @@ export type HomeCount = {
         }
       ]
     | [];
+  animalsForRegistration: Animal[];
+  animalNumberAvailableForRegisteration: number[];
   responses: {
     status: string;
     message: string;
