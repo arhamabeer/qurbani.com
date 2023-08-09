@@ -21,5 +21,12 @@ const instanceOAuth = (token: string) =>
       authorization: "Bearer " + token,
     },
   });
+const instanceOAuthToken = (token: string) =>
+  axios.create({
+    baseURL: API_URL_AUTH,
+    headers: {
+      authorization: "Bearer " + token,
+    },
+  });
 
-export { instance, instanceAuth, instanceOAuth };
+export { instance, instanceAuth, instanceOAuth, instanceOAuthToken };

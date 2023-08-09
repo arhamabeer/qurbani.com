@@ -65,6 +65,7 @@ export const adminSlice = createSlice({
     set: (state, action) => {
       state.email = action.payload.email;
       state.name = action.payload.name;
+      state.loginStatus = true;
     },
     remove: (state, action) => {
       return initialState;
