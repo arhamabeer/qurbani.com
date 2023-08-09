@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { LOCAL_STORAGE_TOKEN } from "../constants";
 import { registerAdmin, selectAdmin } from "../slice/adminSlice";
 import ToastComponent from "../components/ToastComponent";
+import { validateEmail } from "../validations";
 
 function Register() {
   const [values, setValues] = useState<RegisterValueState>({
@@ -52,16 +53,20 @@ function Register() {
 
   const handleRegister = () => {
     let { email, name, password, cpassword } = values;
-    if (email === "" || name === "" || password === "") {
-      toast.error("Email, Name or Password is invalid!");
-    } else if (password !== cpassword) {
-      toast.error("Passwords did not matched!");
-    } else {
-      try {
-        dispatch(registerAdmin(values));
-      } catch (error) {
-        console.error("Login failed:", error);
+    if (validateEmail(email)) {
+      if (email === "" || name === "" || password === "") {
+        toast.error("Email, Name or Password is invalid!");
+      } else if (password !== cpassword) {
+        toast.error("Passwords did not matched!");
+      } else {
+        try {
+          dispatch(registerAdmin(values));
+        } catch (error) {
+          console.error("Login failed:", error);
+        }
       }
+    } else {
+      toast.error("Email format is not valid");
     }
   };
 

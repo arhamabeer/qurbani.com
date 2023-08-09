@@ -10,6 +10,7 @@ import ToastComponent from "../components/ToastComponent";
 import AuthBanner from "../components/authBanner";
 import { AppDispatch } from "../store";
 import { LOCAL_STORAGE_TOKEN } from "../constants";
+import { validateEmail } from "../validations";
 
 function Login() {
   const [values, setValues] = React.useState<LoginValueState>({
@@ -46,13 +47,17 @@ function Login() {
   };
 
   const handleLogin = () => {
-    if (values.email === "" || values.password === "") {
-      toast.error("Email or Password is invalid!");
-    }
-    try {
-      dispatch(loginAdmin(values));
-    } catch (error) {
-      console.error("Login failed:", error);
+    if (validateEmail(values.email)) {
+      if (values.email === "" || values.password === "") {
+        toast.error("Email or Password is invalid!");
+      }
+      try {
+        dispatch(loginAdmin(values));
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
+    } else {
+      toast.error("Email format is not valid");
     }
   };
   return (
