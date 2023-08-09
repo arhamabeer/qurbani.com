@@ -37,8 +37,7 @@ export const loginAdmin = createAsyncThunk(
       });
       return res.data;
     } catch (ex: any) {
-      console.log(`ex =>`, ex);
-      return ex.message;
+      return ex.response.data;
     }
   }
 );
@@ -112,7 +111,7 @@ export const adminSlice = createSlice({
           localStorage.setItem(LOCAL_STORAGE_TOKEN, action.payload.description);
         } else {
           state.loginStatus = false;
-          state.adminLoginMessage = `${action.payload.response.data.responseMessage}, ${action.payload.response.data.errorMessage}`;
+          state.adminLoginMessage = `${action.payload.responseMessage}, ${action.payload.errorMessage}`;
         }
         state.status = "IDLE";
       })
