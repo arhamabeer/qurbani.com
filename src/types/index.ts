@@ -11,14 +11,21 @@ export type RegisterAnimalData = {
   partPrice: string;
   desc: string;
 };
-export type HomeCount =
-  | [
-      {
-        label: string;
-        quantity: number;
-      }
-    ]
-  | [];
+export type HomeCount = {
+  animals:
+    | [
+        {
+          label: string;
+          quantity: number;
+        }
+      ]
+    | [];
+  responses: {
+    status: string;
+    message: string;
+    tokenValidated: boolean;
+  };
+};
 export type DealingData = {
   Name: string;
   Contact: string;
