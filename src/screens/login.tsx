@@ -85,9 +85,18 @@ function Login() {
               placeholder="Password"
             />
           </div>
-          <div className="flex bg-themeBg items-center p-2 w-1/4 my-3 rounded-xl">
+          <div
+            className={`flex bg-themeBg items-center p-2 w-1/4 my-3 rounded-xl ${
+              loginMessage.status === "PENDING" &&
+              "border bg-white border-themeBgDark"
+            }`}
+          >
             <button
-              className="w-full text-white p-1 rounded-xl h-13"
+              className={`w-full p-1 rounded-xl h-13 ${
+                loginMessage.status === "PENDING"
+                  ? "text-themeBg"
+                  : "text-white"
+              }`}
               onClick={() => handleLogin()}
               disabled={loginMessage.status === "PENDING"}
             >

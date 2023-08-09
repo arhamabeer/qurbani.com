@@ -1,7 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { instance, instanceAuth } from "../api";
-import { LoginValueState } from "../types";
-import { LOCAL_STORAGE_TOKEN, LOGIN_ADMIN_THUNK } from "../constants";
+import { LoginValueState, RegisterValueState } from "../types";
+import {
+  LOCAL_STORAGE_TOKEN,
+  LOGIN_ADMIN_THUNK,
+  REGISTER_ADMIN_THUNK,
+} from "../constants";
 import { RootState } from "../store";
 import { toast } from "react-toastify";
 
@@ -11,6 +15,7 @@ type adminState = {
   status: string;
   adminLoginMessage: string;
   loginStatus: boolean;
+  registerStatus: boolean;
 };
 
 const initialState: adminState = {
@@ -18,6 +23,7 @@ const initialState: adminState = {
   email: "",
   status: "idle",
   loginStatus: false,
+  registerStatus: false,
   adminLoginMessage: "",
 };
 
@@ -36,6 +42,22 @@ export const loginAdmin = createAsyncThunk(
     }
   }
 );
+export const registerAdmin = createAsyncThunk(
+  REGISTER_ADMIN_THUNK,
+  async (data: RegisterValueState) => {
+    try {
+      const res = await instanceAuth.post("/register", {
+        Email: data.email,
+        Password: data.password,
+        Name: data.name,
+      });
+      return res.data;
+    } catch (ex: any) {
+      console.log(`ex =>`, ex);
+      return ex.response.data;
+    }
+  }
+);
 
 export const adminSlice = createSlice({
   name: "admin",
@@ -50,6 +72,28 @@ export const adminSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder
+      .addCase(registerAdmin.pending, (state, action) => {
+        console.log("pending == ", action);
+
+        state.status = "PENDING";
+      })
+      .addCase(registerAdmin.fulfilled, (state: adminState, action: any) => {
+        if (typeof action.payload === "string") {
+          state.adminLoginMessage = action.payload;
+          state.registerStatus = false;
+        } else if (action.payload.responseCode === 200) {
+          state.adminLoginMessage = "Admin Registeration Successful";
+          state.registerStatus = true;
+        } else {
+          state.registerStatus = false;
+          state.adminLoginMessage = `${action.payload.responseMessage}, ${action.payload.errorMessage}`;
+        }
+        state.status = "IDLE";
+      })
+      .addCase(registerAdmin.rejected, (state, action) => {
+        state.status = "ERROR";
+      });
     builder
       .addCase(loginAdmin.pending, (state, action) => {
         state.status = "PENDING";

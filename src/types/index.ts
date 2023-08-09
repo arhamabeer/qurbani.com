@@ -65,3 +65,10 @@ export type LoginValueState = {
   email: string;
   password: string;
 };
+
+export type RegisterValueState = {
+  email: string;
+  password: string;
+  cpassword: string;
+  name: string;
+};
