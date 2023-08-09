@@ -22,4 +22,4 @@ const instanceOAuth = (token: string) =>
     },
   });
 
-export { instance, instanceAuth };
+export { instance, instanceAuth, instanceOAuth };
