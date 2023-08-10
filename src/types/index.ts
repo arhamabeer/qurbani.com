@@ -26,6 +26,7 @@ export type HomeCount = {
     status: string;
     message: string;
     tokenValidated: boolean;
+    animalRegistration: boolean;
   };
 };
 export type DealingData = {
