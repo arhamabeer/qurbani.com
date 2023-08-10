@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import adminReducer from "../slice/adminSlice";
 import animalReducer from "../slice/animalSlice";
+import shareReducer from "../slice/shareSlice";
 
 export const store = configureStore({
   reducer: {
     admin: adminReducer,
     animal: animalReducer,
+    share: shareReducer,
   },
 });
 

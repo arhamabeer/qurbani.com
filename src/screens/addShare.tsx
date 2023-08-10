@@ -6,13 +6,21 @@ import Loader from "../components/Loader";
 import { submitToast } from "../handlers";
 import { toast } from "react-toastify";
 import ToastComponent from "../components/ToastComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../store";
+import { LOCAL_STORAGE_TOKEN } from "../constants";
+import {
+  confirmDealing,
+  getAnimalNumberAvailableForDealing,
+  getAnimalRegisteration,
+  selectAnimalForIssue,
+  selectAnimalNumberForIssue,
+} from "../slice/shareSlice";
+import { useNavigate } from "react-router-dom";
 
 function AddShare() {
   const [animalId, setAnimalId] = useState<string | number>("");
-  const [animals, setAnimals] = useState<Animal[]>([]);
   const [selectedAnimal, setSelectedAnimal] = useState<number | null>(null);
-  const [AvailableAnimals, setAvailableAnimals] =
-    useState<AvailableAnimalsForDeal>([]);
   const [data, setData] = useState<DealingData>({
     Name: "",
     Contact: "",
@@ -24,6 +32,13 @@ function AddShare() {
     PartId: "",
     AdId: "",
   });
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const animals = useSelector(selectAnimalForIssue);
+  const AvailableAnimals: AvailableAnimalsForDeal = useSelector(
+    selectAnimalNumberForIssue
+  );
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
   let price =
     selectedAnimal !== null
       ? AvailableAnimals.filter((e) => e.adId === selectedAnimal)[0].price
@@ -32,14 +47,8 @@ function AddShare() {
   useEffect(() => {
     (async () => {
       try {
-        let response = await instance.get("/GetAnimalRegisteration");
-        if (response.status === 200) {
-          //set data to state
-          setAnimals(response.data.data);
-        } else {
-          toast.error(response.data.errorMessage);
-        }
-        // console.log(`post === `, response);
+        if (token !== null) dispatch(getAnimalRegisteration(token));
+        else navigate("/login");
       } catch (err: any) {
         toast.error(err.response.data.errorMessage);
       }
@@ -54,18 +63,18 @@ function AddShare() {
   };
   const handleTypeChange = async (animalId: number) => {
     try {
-      setAnimalId(animalId);
-      let response = await instance.get("/GetAnimalNumberAvailableForDealing", {
-        params: {
-          AnimalId: animalId,
-        },
-      });
-      if (response.status === 200) {
-        let animals = response.data.data.sort(
-          (a: any, b: any) => a.number - b.number
-        );
-        setAvailableAnimals(animals);
-      }
+      if (token !== null) {
+        let data = { token: token, animalId: animalId };
+        setAnimalId(animalId);
+        dispatch(getAnimalNumberAvailableForDealing(data));
+      } else navigate("/login");
+
+      // if (response.status === 200) {
+      //   let animals = response.data.data.sort(
+      //     (a: any, b: any) => a.number - b.number
+      //   );
+      //! setAvailableAnimals(animals);
+      // }
     } catch (err: any) {
       toast.error(err.response.data.errorMessage);
     }
@@ -73,61 +82,67 @@ function AddShare() {
 
   const submit = async () => {
     // console.log("DATA => ", data);
-    try {
-      let {
-        AdId,
-        Address,
-        Contact,
-        EmergencyContact,
-        Name,
-        Nic,
-        PartId,
-        QurbaniDay,
-      } = data;
+    if (token !== null) {
+      try {
+        let {
+          AdId,
+          Address,
+          Contact,
+          EmergencyContact,
+          Name,
+          Nic,
+          PartId,
+          QurbaniDay,
+        } = data;
 
-      if (
-        AdId === "" ||
-        Address === "" ||
-        Contact === "" ||
-        EmergencyContact === "" ||
-        Name === "" ||
-        Nic === "" ||
-        PartId === "" ||
-        QurbaniDay === ""
-      ) {
-        toast.error("Every field is mandatory and must be valid!");
-      } else {
-        let response = await instance.post("/ConfirmDealing", data);
-        if (response.status === 200) {
-          setData({
-            Name: "",
-            Contact: "",
-            EmergencyContact: "",
-            Address: "",
-            Nic: "",
-            Description: "",
-            QurbaniDay: "",
-            PartId: "",
-            AdId: "",
-          });
-          setAnimalId("");
-          setAvailableAnimals([]);
-          setSelectedAnimal(null);
-          toast.success(response.data.data);
-          let response1 = await instance.get("/GetAnimalRegisteration");
-          if (response1.status === 200) {
-            //set data to state
-            setAnimals(response1.data.data);
-          }
+        if (
+          AdId === "" ||
+          Address === "" ||
+          Contact === "" ||
+          EmergencyContact === "" ||
+          Name === "" ||
+          Nic === "" ||
+          PartId === "" ||
+          QurbaniDay === ""
+        ) {
+          toast.error("Every field is mandatory and must be valid!");
         } else {
-          toast.error(response.data.errorMessage);
+          let sending_data = { data: data, token: token };
+          dispatch(confirmDealing(sending_data));
+          let response = await instance.post("/ConfirmDealing", data);
+          if (response.status === 200) {
+            setData({
+              Name: "",
+              Contact: "",
+              EmergencyContact: "",
+              Address: "",
+              Nic: "",
+              Description: "",
+              QurbaniDay: "",
+              PartId: "",
+              AdId: "",
+            });
+            setAnimalId("");
+            //!   setAvailableAnimals([]);
+            setSelectedAnimal(null);
+            toast.success(response.data.data);
+            let response1 = await instance.get("/GetAnimalRegisteration");
+            if (response1.status === 200) {
+              //set data to state
+              //! setAnimals(response1.data.data);
+            }
+          } else {
+            toast.error(response.data.errorMessage);
+          }
         }
+        // console.log(`post === `, response);
+      } catch (err: any) {
+        toast.error(err.response.data.errorMessage);
       }
-      // console.log(`post === `, response);
-    } catch (err: any) {
-      toast.error(err.response.data.errorMessage);
     }
   };
+
+  console.log(data, AvailableAnimals, selectedAnimal);
 
   if (animals.length === 0) return <Loader />;
 

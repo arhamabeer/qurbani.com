@@ -26,6 +26,7 @@ export type HomeCount = {
     status: string;
     message: string;
     tokenValidated: boolean;
+    animalRegistration: boolean;
   };
 };
 export type DealingData = {
@@ -80,4 +81,15 @@ export type RegisterValueState = {
   password: string;
   cpassword: string;
   name: string;
+};
+
+export type AddShareSliceType = {
+  animalNumberAvailableForRegisteration: AvailableAnimalsForDeal;
+  animalsForRegistration: Animal[];
+  responses: {
+    status: string;
+    message: string;
+    tokenValidated: boolean;
+    shareRegistration: boolean;
+  };
 };

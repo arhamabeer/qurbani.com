@@ -14,3 +14,8 @@ export const GET_ANIMAL_TO_REGISTER = "animal/getAnimalforRegistration";
 export const GET_ANIMAL_NUMBER_TO_REGISTER =
   "animal/getAnimalNumberforRegistration";
 export const REGISTER_ANIMAL = "animal/register";
+
+// SHARE CONST
+export const GET_ANIMAL_NUMBER_AVAILABLE_TO_DEAL =
+  "issue/getAnimalNumberAvailableForDealing";
+export const CONFIRM_DEAL = "issue/confirmDealing";

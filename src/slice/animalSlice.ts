@@ -30,6 +30,7 @@ const initialState: HomeCount = {
     status: "idle",
     message: "",
     tokenValidated: true,
+    animalRegistration: false,
   },
 };
 
@@ -119,14 +120,23 @@ export const animalSlice = createSlice({
   name: "animal",
   initialState,
   reducers: {
-    resetAnimalNumberAvailableForRegisteration: (state, action) => {
+    resetAnimalNumberAvailableForRegisteration: (state) => {
       state.animalNumberAvailableForRegisteration = [];
+    },
+    resetResponse: (state) => {
+      state.responses = {
+        status: "idle",
+        message: "",
+        tokenValidated: true,
+        animalRegistration: false,
+      };
     },
   },
   extraReducers(builder) {
     builder
       .addCase(registerAnimal.pending, (state, action) => {
         console.log("pending == ", action);
+        state.responses.animalRegistration = false;
         state.responses.status = "PENDING";
       })
       .addCase(registerAnimal.fulfilled, (state: HomeCount, action: any) => {
@@ -136,6 +146,7 @@ export const animalSlice = createSlice({
         } else if (action.payload.responseCode === 200) {
           state.responses.message = action.payload.data;
           // console.log(action.payload);
+          state.responses.animalRegistration = true;
           state.responses.tokenValidated = true;
         } else {
           state.responses.message = `${action.payload.responseMessage}, ${action.payload.errorMessage}`;
@@ -144,6 +155,7 @@ export const animalSlice = createSlice({
         state.responses.status = "IDLE";
       })
       .addCase(registerAnimal.rejected, (state, action) => {
+        state.responses.animalRegistration = false;
         state.responses.status = "ERROR";
       });
     builder
@@ -245,7 +257,7 @@ export const animalSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { resetAnimalNumberAvailableForRegisteration } =
+export const { resetAnimalNumberAvailableForRegisteration, resetResponse } =
   animalSlice.actions;
 
 export const selectAnimal = (state: RootState) => state.animal.allAnimals;
