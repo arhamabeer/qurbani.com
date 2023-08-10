@@ -92,7 +92,11 @@ export const getAnimalNumberAvailableForDealing = createAsyncThunk(
 export const shareSlice = createSlice({
   name: "animal",
   initialState,
-  reducers: {},
+  reducers: {
+    resetAvailableAnimals: (state) => {
+      state.animalNumberAvailableForRegisteration = [];
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(confirmDealing.pending, (state, action) => {
@@ -107,7 +111,9 @@ export const shareSlice = createSlice({
             state.responses.tokenValidated = false;
           } else if (action.payload.responseCode === 200) {
             console.log("payload == ", action.payload);
-            // state.animalsForRegistration = action.payload.data;
+            state.responses.message = action.payload.data;
+            state.responses.shareRegistration = true;
+
             state.responses.tokenValidated = true;
           } else {
             state.responses.message = `${action.payload.responseMessage}, ${action.payload.errorMessage}`;
@@ -172,7 +178,7 @@ export const shareSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {} = shareSlice.actions;
+export const { resetAvailableAnimals } = shareSlice.actions;
 
 export const selectAnimalForIssue = (state: RootState) =>
   state.share.animalsForRegistration;
