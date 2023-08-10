@@ -6,27 +6,44 @@ import { Animal, RegisterAnimalData } from "../types";
 import ToastComponent from "../components/ToastComponent";
 import { submitToast } from "../handlers";
 import Loader from "../components/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../store";
+import {
+  getAnimalNumberAvailableForRegisteration,
+  getAnimalRegisteration,
+  registerAnimal,
+  selectAnimalNumberForReg,
+  selectallAnimalsForReg,
+} from "../slice/animalSlice";
+import { LOCAL_STORAGE_TOKEN } from "../constants";
+import { useNavigate } from "react-router";
 
 function RegisterAnimal() {
-  const [animals, setAnimals] = useState<Animal[]>([]);
-  const [number, setNumber] = useState<number[]>([]);
+  // const [number, setNumber] = useState<number[]>([]);
   const [data, setData] = useState<RegisterAnimalData>({
     type: 0,
     desc: "",
     number: "",
     partPrice: "",
   });
+  const navigate = useNavigate();
+  const animals = useSelector(selectallAnimalsForReg);
+  const number = useSelector(selectAnimalNumberForReg);
+  const dispatch = useDispatch<AppDispatch>();
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
 
   useEffect(() => {
     (async () => {
       try {
-        let response = await instance.get("/GetAnimalRegisteration");
-        if (response.status === 200) {
-          //set data to state
-          setAnimals(response.data.data);
-        } else {
-          toast.error(response.data.errorMessage);
-        }
+        // let response = await instance.get("/GetAnimalRegisteration");
+        // if (response.status === 200) {
+        //   //set data to state
+        //   setAnimals(response.data.data);
+        // } else {
+        //   toast.error(response.data.errorMessage);
+        // }
+        if (token !== null) dispatch(getAnimalRegisteration(token));
+        else navigate("/login");
       } catch (err: any) {
         toast.error(err.response.data.errorMessage);
       }
@@ -34,21 +51,25 @@ function RegisterAnimal() {
   }, []);
 
   const handleTypeChange = async (animalId: number) => {
-    let response = await instance.get(
-      "/GetAnimalNumberAvailableForRegisteration",
-      {
-        params: {
-          AnimalId: animalId,
-        },
-      }
-    );
-    if (response.status === 200) {
-      setNumber(response.data.data);
-      setData((prevState) => ({
-        ...prevState,
-        type: animalId,
-      }));
-    }
+    if (token !== null) {
+      let data = { token: token, animalId: animalId };
+      dispatch(getAnimalNumberAvailableForRegisteration(data));
+    } else navigate("/login");
+    // let response = await instance.get(
+    //   "/GetAnimalNumberAvailableForRegisteration",
+    //   {
+    //     params: {
+    //       AnimalId: animalId,
+    //     },
+    //   }
+    // );
+    // if (response.status === 200) {
+    //   setNumber(response.data.data);
+    // }
+    setData((prevState) => ({
+      ...prevState,
+      type: animalId,
+    }));
   };
 
   const handleNumberChange = async (number: number) => {
@@ -72,38 +93,43 @@ function RegisterAnimal() {
   console.log(data);
 
   const submit = async () => {
-    try {
-      const { desc, number, partPrice, type } = data;
-      if (
-        number === "" ||
-        partPrice === "" ||
-        parseInt(partPrice) < 1 ||
-        type === 0
-      ) {
-        toast.error("Every field is mandatory and must be valid!");
-      } else {
-        const response = await instance.post(`/AddAnimal/`, {
-          type: type,
-          number: number,
-          partPrice: partPrice,
-          desc: desc,
-        });
-        if (response.status === 200) {
-          toast.success(response.data.data);
-          setData({
-            type: 0,
-            desc: "",
-            number: "",
-            partPrice: "",
-          });
-          setNumber([]);
+    if (token !== null) {
+      try {
+        const { desc, number, partPrice, type } = data;
+        if (
+          number === "" ||
+          partPrice === "" ||
+          parseInt(partPrice) < 1 ||
+          type === 0
+        ) {
+          toast.error("Every field is mandatory and must be valid!");
         } else {
-          toast.error(response.data.errorMessage);
+          let sending_data = { ...data, token: token };
+
+          // const response = await instance.post(`/AddAnimal/`, {
+          //   type: type,
+          //   number: number,
+          //   partPrice: partPrice,
+          //   desc: desc,
+          // });
+          dispatch(registerAnimal(sending_data));
+          // if (response.status === 200) {
+          //   toast.success(response.data.data);
+          //   setData({
+          //     type: 0,
+          //     desc: "",
+          //     number: "",
+          //     partPrice: "",
+          //   });
+          //   // setNumber([]);
+          // } else {
+          //   toast.error(response.data.errorMessage);
+          // }
         }
+        // console.log(`post === `, response);
+      } catch (err: any) {
+        toast.error(err.response.data.errorMessage);
       }
-      // console.log(`post === `, response);
-    } catch (err: any) {
-      toast.error(err.response.data.errorMessage);
     }
   };
 

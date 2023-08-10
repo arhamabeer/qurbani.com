@@ -10,6 +10,7 @@ import ToastComponent from "../components/ToastComponent";
 import AuthBanner from "../components/authBanner";
 import { AppDispatch } from "../store";
 import { LOCAL_STORAGE_TOKEN } from "../constants";
+import { validateEmail } from "../validations";
 
 function Login() {
   const [values, setValues] = React.useState<LoginValueState>({
@@ -46,13 +47,17 @@ function Login() {
   };
 
   const handleLogin = () => {
-    if (values.email === "" || values.password === "") {
-      toast.error("Email or Password is invalid!");
-    }
-    try {
-      dispatch(loginAdmin(values));
-    } catch (error) {
-      console.error("Login failed:", error);
+    if (validateEmail(values.email)) {
+      if (values.email === "" || values.password === "") {
+        toast.error("Email or Password is invalid!");
+      }
+      try {
+        dispatch(loginAdmin(values));
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
+    } else {
+      toast.error("Email format is not valid");
     }
   };
   return (
@@ -85,9 +90,18 @@ function Login() {
               placeholder="Password"
             />
           </div>
-          <div className="flex bg-themeBg items-center p-2 w-1/4 my-3 rounded-xl">
+          <div
+            className={`flex bg-themeBg items-center p-2 w-1/4 my-3 rounded-xl ${
+              loginMessage.status === "PENDING" &&
+              "border bg-white border-themeBgDark"
+            }`}
+          >
             <button
-              className="w-full text-white p-1 rounded-xl h-13"
+              className={`w-full p-1 rounded-xl h-13 ${
+                loginMessage.status === "PENDING"
+                  ? "text-themeBg"
+                  : "text-white"
+              }`}
               onClick={() => handleLogin()}
               disabled={loginMessage.status === "PENDING"}
             >

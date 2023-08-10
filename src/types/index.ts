@@ -11,14 +11,23 @@ export type RegisterAnimalData = {
   partPrice: string;
   desc: string;
 };
-export type HomeCount =
-  | [
-      {
-        label: string;
-        quantity: number;
-      }
-    ]
-  | [];
+export type HomeCount = {
+  allAnimals:
+    | [
+        {
+          label: string;
+          quantity: number;
+        }
+      ]
+    | [];
+  animalsForRegistration: Animal[];
+  animalNumberAvailableForRegisteration: number[];
+  responses: {
+    status: string;
+    message: string;
+    tokenValidated: boolean;
+  };
+};
 export type DealingData = {
   Name: string;
   Contact: string;
@@ -64,4 +73,11 @@ export type NicData = {
 export type LoginValueState = {
   email: string;
   password: string;
+};
+
+export type RegisterValueState = {
+  email: string;
+  password: string;
+  cpassword: string;
+  name: string;
 };
