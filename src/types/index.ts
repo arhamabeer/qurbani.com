@@ -82,3 +82,13 @@ export type RegisterValueState = {
   cpassword: string;
   name: string;
 };
+
+export type AddShareSliceType = {
+  animalsForRegistration: Animal[];
+  responses: {
+    status: string;
+    message: string;
+    tokenValidated: boolean;
+    shareRegistration: boolean;
+  };
+};
