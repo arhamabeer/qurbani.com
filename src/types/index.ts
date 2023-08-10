@@ -84,6 +84,7 @@ export type RegisterValueState = {
 };
 
 export type AddShareSliceType = {
+  animalNumberAvailableForRegisteration: AvailableAnimalsForDeal;
   animalsForRegistration: Animal[];
   responses: {
     status: string;
