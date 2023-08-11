@@ -13,8 +13,10 @@ import {
   confirmDealing,
   getAnimalNumberAvailableForDealing,
   getAnimalRegisteration,
+  resetAvailableAnimals,
   selectAnimalForIssue,
   selectAnimalNumberForIssue,
+  selectIssueResponses,
 } from "../slice/shareSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -35,6 +37,7 @@ function AddShare() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const animals = useSelector(selectAnimalForIssue);
+  const issueResponses = useSelector(selectIssueResponses);
   const AvailableAnimals: AvailableAnimalsForDeal = useSelector(
     selectAnimalNumberForIssue
   );
@@ -44,6 +47,27 @@ function AddShare() {
       ? AvailableAnimals.filter((e) => e.adId === selectedAnimal)[0].price
       : 0;
 
+  useEffect(() => {
+    if (issueResponses.shareRegistration && issueResponses.message !== "") {
+      setSelectedAnimal(null);
+      dispatch(resetAvailableAnimals());
+      setData({
+        Name: "",
+        Contact: "",
+        EmergencyContact: "",
+        Address: "",
+        Nic: "",
+        Description: "",
+        QurbaniDay: "",
+        PartId: "",
+        AdId: "",
+      });
+      setAnimalId("");
+      toast.success(issueResponses.message);
+      if (token !== null) dispatch(getAnimalRegisteration(token));
+      else navigate("/login");
+    }
+  }, [issueResponses]);
   useEffect(() => {
     (async () => {
       try {
@@ -111,26 +135,26 @@ function AddShare() {
           dispatch(confirmDealing(sending_data));
           let response = await instance.post("/ConfirmDealing", data);
           if (response.status === 200) {
-            setData({
-              Name: "",
-              Contact: "",
-              EmergencyContact: "",
-              Address: "",
-              Nic: "",
-              Description: "",
-              QurbaniDay: "",
-              PartId: "",
-              AdId: "",
-            });
-            setAnimalId("");
+            // setData({
+            //   Name: "",
+            //   Contact: "",
+            //   EmergencyContact: "",
+            //   Address: "",
+            //   Nic: "",
+            //   Description: "",
+            //   QurbaniDay: "",
+            //   PartId: "",
+            //   AdId: "",
+            // });
+            // setAnimalId("");
             //!   setAvailableAnimals([]);
-            setSelectedAnimal(null);
-            toast.success(response.data.data);
-            let response1 = await instance.get("/GetAnimalRegisteration");
-            if (response1.status === 200) {
-              //set data to state
-              //! setAnimals(response1.data.data);
-            }
+            // setSelectedAnimal(null);
+            // toast.success(response.data.data);
+            // let response1 = await instance.get("/GetAnimalRegisteration");
+            // if (response1.status === 200) {
+            //set data to state
+            //! setAnimals(response1.data.data);
+            // }
           } else {
             toast.error(response.data.errorMessage);
           }
@@ -141,8 +165,7 @@ function AddShare() {
       }
     }
   };
-
-  console.log(data, AvailableAnimals, selectedAnimal);
+  console.log(AvailableAnimals, selectedAnimal);
 
   if (animals.length === 0) return <Loader />;
 
@@ -183,12 +206,12 @@ function AddShare() {
               handleDataChange("AdId", parseInt(e.target.value));
               setSelectedAnimal(parseInt(e.target.value));
             }}
-            value={
-              AvailableAnimals.length > 0 && selectedAnimal !== null
-                ? AvailableAnimals.filter((e) => e.adId === selectedAnimal)[0]
-                    .number
-                : ""
-            }
+            // value={
+            //   AvailableAnimals.length > 0 && selectedAnimal !== null
+            //     ? AvailableAnimals.filter((e) => e.adId === selectedAnimal)[0]
+            //         .number
+            //     : ""
+            // }
           >
             <option defaultChecked selected disabled value="">
               Select Animal Number
