@@ -72,17 +72,7 @@ function RegisterAnimal() {
       let data = { token: token, animalId: animalId };
       dispatch(getAnimalNumberAvailableForRegisteration(data));
     } else navigate("/login");
-    // let response = await instance.get(
-    //   "/GetAnimalNumberAvailableForRegisteration",
-    //   {
-    //     params: {
-    //       AnimalId: animalId,
-    //     },
-    //   }
-    // );
-    // if (response.status === 200) {
-    //   setNumber(response.data.data);
-    // }
+
     setData((prevState) => ({
       ...prevState,
       type: animalId,

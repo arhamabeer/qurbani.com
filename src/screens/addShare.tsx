@@ -14,6 +14,7 @@ import {
   getAnimalNumberAvailableForDealing,
   getAnimalRegisteration,
   resetAvailableAnimals,
+  resetResponse,
   selectAnimalForIssue,
   selectAnimalNumberForIssue,
   selectIssueResponses,
@@ -43,14 +44,25 @@ function AddShare() {
   );
   const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
   let price =
-    selectedAnimal !== null
-      ? AvailableAnimals.filter((e) => e.adId === selectedAnimal)[0].price
+    selectedAnimal !== null && AvailableAnimals.length > 0
+      ? AvailableAnimals?.filter((e) => e.adId === selectedAnimal)[0]?.price
       : 0;
 
   useEffect(() => {
+    (async () => {
+      try {
+        if (token !== null) dispatch(getAnimalRegisteration(token));
+        else navigate("/login");
+      } catch (err: any) {
+        toast.error(err.response.data.errorMessage);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
     if (issueResponses.shareRegistration && issueResponses.message !== "") {
+      toast.success(issueResponses.message);
       setSelectedAnimal(null);
-      dispatch(resetAvailableAnimals());
       setData({
         Name: "",
         Contact: "",
@@ -63,21 +75,18 @@ function AddShare() {
         AdId: "",
       });
       setAnimalId("");
-      toast.success(issueResponses.message);
+      dispatch(resetAvailableAnimals());
+      dispatch(resetResponse());
       if (token !== null) dispatch(getAnimalRegisteration(token));
       else navigate("/login");
+    } else if (
+      !issueResponses.shareRegistration &&
+      issueResponses.message !== ""
+    ) {
+      toast.error(issueResponses.message);
+      dispatch(resetResponse());
     }
   }, [issueResponses]);
-  useEffect(() => {
-    (async () => {
-      try {
-        if (token !== null) dispatch(getAnimalRegisteration(token));
-        else navigate("/login");
-      } catch (err: any) {
-        toast.error(err.response.data.errorMessage);
-      }
-    })();
-  }, []);
 
   const handleDataChange = (target: string, value: string | number) => {
     setData((prev) => ({
@@ -105,7 +114,7 @@ function AddShare() {
   };
 
   const submit = async () => {
-    // console.log("DATA => ", data);
+    console.log("DATA => ", data);
     if (token !== null) {
       try {
         let {
@@ -118,7 +127,6 @@ function AddShare() {
           PartId,
           QurbaniDay,
         } = data;
-
         if (
           AdId === "" ||
           Address === "" ||
@@ -133,42 +141,21 @@ function AddShare() {
         } else {
           let sending_data = { data: data, token: token };
           dispatch(confirmDealing(sending_data));
-          let response = await instance.post("/ConfirmDealing", data);
-          if (response.status === 200) {
-            // setData({
-            //   Name: "",
-            //   Contact: "",
-            //   EmergencyContact: "",
-            //   Address: "",
-            //   Nic: "",
-            //   Description: "",
-            //   QurbaniDay: "",
-            //   PartId: "",
-            //   AdId: "",
-            // });
-            // setAnimalId("");
-            //!   setAvailableAnimals([]);
-            // setSelectedAnimal(null);
-            // toast.success(response.data.data);
-            // let response1 = await instance.get("/GetAnimalRegisteration");
-            // if (response1.status === 200) {
-            //set data to state
-            //! setAnimals(response1.data.data);
-            // }
-          } else {
-            toast.error(response.data.errorMessage);
-          }
         }
-        // console.log(`post === `, response);
       } catch (err: any) {
-        toast.error(err.response.data.errorMessage);
+        toast.error(err);
       }
     }
   };
-  console.log(AvailableAnimals, selectedAnimal);
 
   if (animals.length === 0) return <Loader />;
-
+  console.log(
+    selectedAnimal,
+    AvailableAnimals.length > 0 && selectedAnimal !== null
+      ? AvailableAnimals?.filter((e) => e.adId === selectedAnimal)[0]?.number
+      : "",
+    AvailableAnimals
+  );
   return (
     <div className="flex  justify-between">
       <div className="flex w-2/4 flex-col justify-center items-center">
@@ -203,15 +190,16 @@ function AddShare() {
             id=""
             disabled={AvailableAnimals.length === 0}
             onChange={(e) => {
+              console.log("val =>", e.target.value);
               handleDataChange("AdId", parseInt(e.target.value));
               setSelectedAnimal(parseInt(e.target.value));
             }}
-            // value={
-            //   AvailableAnimals.length > 0 && selectedAnimal !== null
-            //     ? AvailableAnimals.filter((e) => e.adId === selectedAnimal)[0]
-            //         .number
-            //     : ""
-            // }
+            value={
+              AvailableAnimals.length > 0 && selectedAnimal !== null
+                ? AvailableAnimals?.filter((e) => e.adId === selectedAnimal)[0]
+                    ?.adId
+                : ""
+            }
           >
             <option defaultChecked selected disabled value="">
               Select Animal Number
