@@ -5,6 +5,7 @@ import {
   GET_ANIMAL_NUMBER_AVAILABLE_TO_DEAL,
   GET_ANIMAL_TO_REGISTER,
   GET_DEAL,
+  ISSUE_DEAL,
   LOCAL_STORAGE_TOKEN,
 } from "../constants";
 import { RootState } from "../store";
@@ -13,6 +14,11 @@ import { AddShareSliceType, DealingData } from "../types";
 type AnimalNumberProps = {
   token: string;
   animalId: number;
+};
+type IssueDealProps = {
+  dealId: number;
+  personId: number;
+  token: string;
 };
 type GetDealProps = {
   token: string;
@@ -50,16 +56,34 @@ const initialState: AddShareSliceType = {
     tokenValidated: true,
     shareRegistration: false,
     getNicData: false,
+    dealIssued: false,
   },
 };
 
+export const issueDealToPerson = createAsyncThunk(
+  ISSUE_DEAL,
+  async (data: IssueDealProps) => {
+    try {
+      const axiosAuth = instanceOAuth(data.token);
+      let response = await axiosAuth.post("/IssueDealToPerson", data);
+      return response.data;
+    } catch (err: any) {
+      console.log("err ", err);
+      if (err.response.status === 401) {
+        localStorage.removeItem(LOCAL_STORAGE_TOKEN);
+        return "Session Expired. Please login again";
+      }
+      return err.response.data.errorMessage;
+    }
+  }
+);
 export const getDealOfPerson = createAsyncThunk(
   GET_DEAL,
   async (datas: GetDealProps) => {
     try {
       let { token, nic } = datas;
       const axiosAuth = instanceOAuth(token);
-      let response = await axiosAuth.post("/GetDealOfPerson", {
+      let response = await axiosAuth.get("/GetDealOfPerson", {
         params: {
           nic: nic,
         },
@@ -149,10 +173,41 @@ export const shareSlice = createSlice({
         tokenValidated: true,
         shareRegistration: false,
         getNicData: false,
+        dealIssued: false,
       };
+    },
+    reselAllIssue: (state) => {
+      return initialState;
     },
   },
   extraReducers(builder) {
+    builder
+      .addCase(issueDealToPerson.pending, (state, action) => {
+        console.log("pending == ", action);
+        state.responses.status = "PENDING";
+      })
+      .addCase(
+        issueDealToPerson.fulfilled,
+        (state: AddShareSliceType, action: any) => {
+          if (typeof action.payload === "string") {
+            state.responses.message = action.payload;
+            state.responses.tokenValidated = false;
+          } else if (action.payload.responseCode === 200) {
+            console.log("payload == ", action.payload);
+            state.nicData.pickedUp = true;
+            state.responses.dealIssued = true;
+            state.responses.message = action.payload.data;
+            state.responses.tokenValidated = true;
+          } else {
+            state.responses.message = `${action.payload.responseMessage}, ${action.payload.errorMessage}`;
+            state.responses.tokenValidated = false;
+          }
+          state.responses.status = "IDLE";
+        }
+      )
+      .addCase(issueDealToPerson.rejected, (state, action) => {
+        state.responses.status = "ERROR";
+      });
     builder
       .addCase(getDealOfPerson.pending, (state, action) => {
         console.log("pending == ", action);
@@ -260,7 +315,8 @@ export const shareSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { resetAvailableAnimals, resetResponse } = shareSlice.actions;
+export const { resetAvailableAnimals, resetResponse, reselAllIssue } =
+  shareSlice.actions;
 
 export const selectAnimalForIssue = (state: RootState) =>
   state.share.animalsForRegistration;

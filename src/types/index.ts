@@ -93,5 +93,6 @@ export type AddShareSliceType = {
     tokenValidated: boolean;
     shareRegistration: boolean;
     getNicData: boolean;
+    dealIssued: boolean;
   };
 };

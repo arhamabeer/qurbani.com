@@ -9,11 +9,15 @@ import ToastComponent from "../components/ToastComponent";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDealOfPerson,
+  issueDealToPerson,
+  reselAllIssue,
+  resetResponse,
   selectIssueResponses,
   selectNicData,
 } from "../slice/shareSlice";
 import { AppDispatch } from "../store";
 import { LOCAL_STORAGE_TOKEN } from "../constants";
+import { useNavigate } from "react-router-dom";
 
 function IssueShare() {
   const [nic, setNic] = useState<string>("");
@@ -39,36 +43,28 @@ function IssueShare() {
   const nicData = useSelector(selectNicData);
   const shareResponses = useSelector(selectIssueResponses);
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
 
   useEffect(() => {
-    if (shareResponses.getNicData) {
-      setLoad(false);
-    } else if (!shareResponses.getNicData && shareResponses.message !== "") {
-      toast.error(shareResponses.message);
-    }
+    if (token !== null) {
+      if (shareResponses.getNicData) {
+        dispatch(resetResponse());
+        setLoad(false);
+      } else if (!shareResponses.getNicData && shareResponses.message !== "") {
+        toast.error(shareResponses.message);
+        dispatch(resetResponse());
+      }
+      if (shareResponses.dealIssued && shareResponses.message !== "") {
+        toast.success(shareResponses.message);
+        dispatch(resetResponse());
+      }
+    } else navigate("/login");
   }, [shareResponses]);
 
   const handleReset = async () => {
     setNic("");
-    setNicData({
-      name: "",
-      contact: "",
-      emergencyContact: "",
-      address: "",
-      nic: "",
-      adId: 0,
-      partId: 0,
-      qurbaniDay: 0,
-      description: "",
-      dealId: 0,
-      pickedUp: false,
-      personId: 0,
-      price: 0,
-      finalPrice: 0,
-      animalType: "",
-      number: 0,
-    });
+    dispatch(reselAllIssue());
   };
   const handleFind = async () => {
     if (token !== null) {
@@ -80,30 +76,22 @@ function IssueShare() {
         toast.error(err.response.data.errorMessage);
         setLoad(false);
       }
-    }
+    } else navigate("/login");
   };
 
   const handleIssue = async () => {
-    try {
-      let data = {
-        dealId: nicData.dealId,
-        personId: nicData.personId,
-      };
-      const response = await instance.post("/IssueDealToPerson", data);
-      console.log("data", response, data);
-
-      if (response.status === 200) {
-        toast.success(response.data.data);
-        setNicData((prev) => ({
-          ...prev,
-          pickedUp: true,
-        }));
-      } else {
-        toast.error(response.data.errorMessage);
+    if (token !== null) {
+      try {
+        let data = {
+          dealId: nicData.dealId,
+          personId: nicData.personId,
+          token: token,
+        };
+        dispatch(issueDealToPerson(data));
+      } catch (err: any) {
+        toast.error(err.message);
       }
-    } catch (err: any) {
-      toast.error(err.response.data.errorMessage);
-    }
+    } else navigate("/login");
   };
 
   // console.log("data", nicData, load);
