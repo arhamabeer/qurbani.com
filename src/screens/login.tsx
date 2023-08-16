@@ -47,7 +47,7 @@ function Login() {
   };
 
   const handleLogin = () => {
-    if (!validateEmail(values.email)) {
+    if (validateEmail(values.email)) {
       if (values.email === "" || values.password === "") {
         toast.error("Email or Password is invalid!");
       }

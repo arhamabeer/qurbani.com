@@ -86,10 +86,13 @@ export type RegisterValueState = {
 export type AddShareSliceType = {
   animalNumberAvailableForRegisteration: AvailableAnimalsForDeal;
   animalsForRegistration: Animal[];
+  nicData: NicData;
   responses: {
     status: string;
     message: string;
     tokenValidated: boolean;
     shareRegistration: boolean;
+    getNicData: boolean;
+    dealIssued: boolean;
   };
 };

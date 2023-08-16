@@ -19,3 +19,5 @@ export const REGISTER_ANIMAL = "animal/register";
 export const GET_ANIMAL_NUMBER_AVAILABLE_TO_DEAL =
   "issue/getAnimalNumberAvailableForDealing";
 export const CONFIRM_DEAL = "issue/confirmDealing";
+export const GET_DEAL = "issue/getDealOfPerson";
+export const ISSUE_DEAL = "issue/IssueDealToPerson";
